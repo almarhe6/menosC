@@ -71,8 +71,8 @@ declaracionVariable
 	;
 
 tipoSimple
-	: INT_
-	| BOOL_
+	: INT_ { $$ = T_ENTERO; }
+	| BOOL_ { $$ = T_LOGICO; }
 	;
 
 listaCampos
