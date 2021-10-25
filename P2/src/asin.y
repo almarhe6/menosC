@@ -48,7 +48,25 @@ declaracion
 
 declaracionVariable
 	: tipoSimple ID_ PUNTOCOMA_
+	{ 
+		if (!insTdS($2, VARIABLE, $1, niv, dvar, -1))
+            yyerror("Ya existe una variable con el mismo identificador.");
+        else
+            dvar += TALLA_TIPO_SIMPLE; 
+	}
 	| tipoSimple ID_ CORCHETEIZQ_ CTE_ CORCHETEDER_ PUNTOCOMA_
+	{ 
+        if ($4 <= 0) {
+            yyerror("El indice de inicialización de los vectores tiene que ser un entero positivo.");
+        } else {
+			int ref = insTdA($1, $4);
+			if (!insTdS($2, VARIABLE, T_ARRAY, niv, dvar, ref))
+				yyerror("Ya existe un vector con el mismo identificador.");
+			else
+				dvar += $4 * TALLA_TIPO_SIMPLE; 
+		}
+        
+	}
 	| STRUCT_ LLAVEIZQ_ listaCampos LLAVEDER_ ID_ PUNTOCOMA_
 	;
 
