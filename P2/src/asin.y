@@ -37,14 +37,14 @@ programa
     ;
 
 listaDeclaraciones
-	: declaracion
-	| listaDeclaraciones declaracion
-	;
+    : declaracion { $$ = $1; }
+    | listaDeclaraciones declaracion { $$ = $1 + $2; }
+    ;
 
 declaracion
-	: declaracionVariable
-	| declaracionFuncion
-	;
+    : declaracionVariable { $$ = 0; }
+    | declaracionFuncion { $$ = $1; }
+    ;
 
 declaracionVariable
 	: tipoSimple ID_ PUNTOCOMA_
