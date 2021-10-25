@@ -12,11 +12,22 @@
 	Expresion texp;
 }
 
-%token PUNTOCOMA_ ID_ CORCHETEIZQ_ CORCHETEDER_ CTE_ STRUCT_ LLAVEIZQ_ LLAVEDER_ IF_
+%token PUNTOCOMA_ CORCHETEIZQ_ CORCHETEDER_ STRUCT_ LLAVEIZQ_ LLAVEDER_ IF_
 %token INT_ BOOL_ 
 %token PARENTESISIZQ_ PARENTESISDER_ COMA_ IGUAL_ ELSE_ READ_ PRINT_ WHILE_ RETURN_
 %token PUNTO_ TRUE_ FALSE_ OPAND_ OPOR_ OPIGUAL_ OPNOTIGUAL_ COMPMAYOR_ COMPMENOR_ COMPMAYORIG_
 %token COMPMENORIG_ OPSUMA_ OPRESTA_ OPMULT_ OPDIV_ OPNOT_
+
+%token <cent>  CTE_
+%token <ident> ID_
+%type  <lista> listaParametrosFormales parametrosFormales
+%type  <cent>  tipoSimple operadorIncremento operadorUnario operadorMultiplicativo
+			   operadorAditivo operadorRelacional operadorIgualdad  operadorLogico 
+			   listaDeclaraciones declaracion declaracionFuncion cabeceraFuncion
+
+%type  <texp>  expresionOpcional expresion expresionIgualdad expresionRelacional 
+			   expresionAditiva expresionMultiplicativa expresionUnaria expresionSufija
+               constante
 
 %%
 
