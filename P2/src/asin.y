@@ -1,7 +1,16 @@
 %{
 #include <stdio.h>
 #include "header.h"
+#include "libtds.h"
+#include <string.h>
 %}
+
+%union{
+	int cent;
+	char *ident;
+	Lista lista;
+	Expresion texp;
+}
 
 %token PUNTOCOMA_ ID_ CORCHETEIZQ_ CORCHETEDER_ CTE_ STRUCT_ LLAVEIZQ_ LLAVEDER_ IF_
 %token INT_ BOOL_ 
