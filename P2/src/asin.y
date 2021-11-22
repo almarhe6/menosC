@@ -93,14 +93,18 @@ listaCampos
 	}
 	;
 
-declaracionFuncion
-	: tipoSimple ID_ PARENTESISIZQ_ parametrosFormales PARENTESISDER_ bloque
-	{
-		niv = 1;
-		cargaContexto(niv);
-
-		descargarContexto(niv);
-	}
+declaracionFuncion//Pendiente de terminar
+	: tipoSimple ID_ 
+	
+	{niv = 1;cargaContexto(niv);}
+	
+	PARENTESISIZQ_ parametrosFormales PARENTESISDER_ 
+	
+	{insTdS(nivel=0);}
+	
+	bloque
+	
+	{descargarContexto(niv);}
 	;
 
 parametrosFormales
