@@ -21,11 +21,11 @@
 %token <cent>  CTE_
 %token <ident> ID_
 %type  <lista> listaParametrosFormales parametrosFormales
-%type  <cent>  tipoSimple operadorIncremento operadorUnario operadorMultiplicativo
+%type  <cent>  tipoSimple operadorUnario operadorMultiplicativo
 			   operadorAditivo operadorRelacional operadorIgualdad  operadorLogico 
-			   listaDeclaraciones declaracion declaracionFuncion cabeceraFuncion
+			   listaDeclaraciones declaracion declaracionFuncion
 
-%type  <texp>  expresionOpcional expresion expresionIgualdad expresionRelacional 
+%type  <texp>  expresion expresionIgualdad expresionRelacional 
 			   expresionAditiva expresionMultiplicativa expresionUnaria expresionSufija
                constante
 
@@ -68,9 +68,11 @@ declaracionVariable
 	}
 
 	// insTdR para cada elemento
-	| STRUCT_ LLAVEIZQ_ listaCampos LLAVEDER_ ID_ PUNTOCOMA_ {
-		if(!insTdS($5, T_RECORD, dvar, $3.ref) yyerror("Identificador de struct ya utilizado");
-		else dvar += $3.talla;}
+	| STRUCT_ LLAVEIZQ_ listaCampos LLAVEDER_ ID_ PUNTOCOMA_ 
+	{
+		if(!insTdS($5, VARIABLE, T_RECORD, niv, dvar, $3.ref) yyerror("Identificador de struct ya utilizado");
+		else dvar += $3.talla;
+	}
 	;
 
 tipoSimple
