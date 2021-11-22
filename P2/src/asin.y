@@ -95,6 +95,12 @@ listaCampos
 
 declaracionFuncion
 	: tipoSimple ID_ PARENTESISIZQ_ parametrosFormales PARENTESISDER_ bloque
+	{
+		niv = 1;
+		cargaContexto(niv);
+
+		descargarContexto(niv);
+	}
 	;
 
 parametrosFormales
@@ -103,13 +109,19 @@ parametrosFormales
 	;
 
 listaParametrosFormales
-	: tipoSimple ID_ {insTdS(-1, $2, $1, 0);
-					  $$.talla = TALLA_TIPO_SIMPLE;}
-	| tipoSimple ID_ COMA_ listaParametrosFormales 
-	{
-		if (insTdR($1.ref, $3, $2, $1.talla) < 0){
+	: tipoSimple ID_ 
+	{	insTdS($2, PARAMETRO, $1, niv, dvar, 0);
+		$$.talla = TALLA_TIPO_SIMPLE;
+		if (insTdD($2.ref, $1) < 0){
 			yyerror("Variable con el mismo identificador ya declarada en struct")
 		}
+	}
+	| tipoSimple ID_ COMA_ listaParametrosFormales 
+	{
+		if (insTdD($1.ref, $3) < 0){
+			yyerror("Variable con el mismo identificador ya declarada en struct")
+		}
+		insTdS($2, PARAMETRO, $1, niv, dvar, 0);
 		$$.talla = $1.talla + TALLA_TIPO_SIMPLE;
 	}
 	;
