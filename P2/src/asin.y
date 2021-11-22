@@ -164,6 +164,19 @@ instruccionAsignacion
 		}
 	}
   	| ID_ PUNTO_ ID_ IGUAL_ expresion PUNTOCOMA_
+	  {
+		SIMB sim = obtTdS($1);
+		SIMB sim2 = obtTdS($3);
+
+		if (sim.t != T_RECORD) {yyerror("La variable no es una estructura.");}
+		if($5.t != T_ERROR && sim2.t != T_ERROR){
+			if (sim.t == T_ERROR) {
+				yyerror("Objeto no declarado.");
+			}else if(sim2.t != $5.t){
+				yyerror("Tipos incompatibles.");
+			}
+		}
+	  }
 	;
 
 instruccionEntradaSalida
