@@ -105,10 +105,13 @@ parametrosFormales
 listaParametrosFormales
 	: tipoSimple ID_ {insTdS(-1, $2, $1, 0);
 					  $$.talla = TALLA_TIPO_SIMPLE;}
-	| tipoSimple ID_ COMA_ listaParametrosFormales {
-		if (insTdR($1.ref, $3, $2, $1.talla) < 0){yyerror("Variable con el mismo identificador ya declarada en struct")
+	| tipoSimple ID_ COMA_ listaParametrosFormales 
+	{
+		if (insTdR($1.ref, $3, $2, $1.talla) < 0){
+			yyerror("Variable con el mismo identificador ya declarada en struct")
+		}
 		$$.talla = $1.talla + TALLA_TIPO_SIMPLE;
-		};
+	}
 	;
 
 bloque
