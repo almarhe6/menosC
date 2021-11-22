@@ -104,12 +104,19 @@ declaracionFuncion//Pendiente de terminar
 	
 	bloque
 	
-	{descargarContexto(niv);}
+	{mostrarTdS();
+	descargarContexto(niv);}
 	;
 
 parametrosFormales
-	:
-	| listaParametrosFormales
+	: listaParametrosFormales{
+			$$.ref = $1.ref;
+			$$.talla = $1.talla;
+	}
+	| {
+		$$.ref = insTdD(-1, T_VACIO);
+		$$.talla = 0;
+	  }
 	;
 
 listaParametrosFormales
