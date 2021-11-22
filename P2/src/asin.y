@@ -20,7 +20,7 @@
 
 %token <cent>  CTE_
 %token <ident> ID_
-%type  <lista> listaParametrosFormales parametrosFormales
+%type  <lista> listaParametrosFormales parametrosFormales listaCampos
 %type  <cent>  tipoSimple operadorUnario operadorMultiplicativo
 			   operadorAditivo operadorRelacional operadorIgualdad  operadorLogico 
 			   listaDeclaraciones declaracion declaracionFuncion
