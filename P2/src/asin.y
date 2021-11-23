@@ -8,7 +8,7 @@
 %union{
 	int cent;
 	char *ident;
-	lista lista;
+	int referencia;
 	int expr;
 }
 
@@ -21,10 +21,10 @@
 
 %token <cent>  CTE_
 %token <ident> ID_
-%type  <lista> listaParametrosFormales parametrosFormales listaCampos
+%type  <referencia> listaParametrosFormales parametrosFormales listaCampos
 %type  <cent>  tipoSimple operadorUnario operadorMultiplicativo
 			   operadorAditivo operadorRelacional operadorIgualdad  operadorLogico 
-			   listaDeclaraciones declaracion declaracionFuncion
+			   listaDeclaraciones declaracion declaracionFuncion bloque
 
 %type  <expr>  expresion expresionIgualdad expresionRelacional 
 			   expresionAditiva expresionMultiplicativa expresionUnaria expresionSufija
@@ -33,9 +33,8 @@
 
 %%
 
-programa
-	: { dvar=0; niv = 0; cargaContexto(niv); }
-    listaDeclaraciones { if(verTdS) mostrarTdS(); }
+programa: { dvar=0; niv = 0; cargaContexto(niv); }
+    listaDeclaraciones { if(verTdS) mostrarTdS(); if(obtTdS("main").t == T_ERROR) yyerror("El programa no tiene main"); }
     ;
 
 listaDeclaraciones
@@ -52,30 +51,31 @@ declaracionVariable
 	: tipoSimple ID_ PUNTOCOMA_
 	{ 
 		if (!insTdS($2, VARIABLE, $1, niv, dvar, -1))
-            yyerror("Ya existe una variable con el mismo identificador.");
+            yyerror("Ya existe una variable con el mismo nombre");
         else
             dvar += TALLA_TIPO_SIMPLE; 
+        if(verTdS) mostrarTdS();
 	}
 	| tipoSimple ID_ CORCHETEIZQ_ CTE_ CORCHETEDER_ PUNTOCOMA_
 	{ 
-		int numelem = $4;
+	int numelem = $4;
         if (numelem <= 0) {
             yyerror("Talla inapropiada del array");
-			numelem = 0
+		numelem = 0;
         }
-		int ref = insTdA($1, numelem);
-		if (!insTdS($2, VARIABLE, T_ARRAY, niv, dvar, ref))
-			yyerror("Identificador repetido");
-		else
-			dvar += numelem * TALLA_TIPO_SIMPLE; 
-		
+	if (!insTdS($2, VARIABLE, T_ARRAY, niv, dvar, insTdA($1, numelem)))
+		yyerror("Identificador repetido");
+	else
+		dvar += numelem * TALLA_TIPO_SIMPLE; 
+	if(verTdS) mostrarTdS();
 	}
 
 	// insTdR para cada elemento
 	| STRUCT_ LLAVEIZQ_ listaCampos LLAVEDER_ ID_ PUNTOCOMA_ 
 	{
-		if(!insTdS($5, VARIABLE, T_RECORD, niv, dvar, $3.ref)) {yyerror("Identificador de struct ya utilizado");}
-		else dvar += $3.talla;
+		if(!insTdS($5, VARIABLE, T_RECORD, niv, dvar, $3)) {yyerror("Identificador de struct ya utilizado");}
+		else dvar += TALLA_TIPO_SIMPLE;
+		if(verTdS) mostrarTdS();
 	}
 	;
 
@@ -86,65 +86,63 @@ tipoSimple
 
 listaCampos
 	: tipoSimple ID_ PUNTOCOMA_ {
-					$$.ref = insTdR(-1, $2, $1, 0); 
-					$$.talla = TALLA_TIPO_SIMPLE; 
+					$$ = insTdR(-1, $2, $1, 0); 
+					dvar += TALLA_TIPO_SIMPLE; 
 	}
 	| listaCampos tipoSimple ID_ PUNTOCOMA_ {
-		if (insTdR($1.ref, $3, $2, $1.talla) < 0){yyerror("Variable con el mismo identificador ya declarada en struct");
-		$$.talla = $1.talla + TALLA_TIPO_SIMPLE;
-		};
-		
+		if (insTdR($$, $3, $2, dvar) == -1) yyerror("Campo de struct ya declarado");
+		else{
+		insTdR($$,$3, $2, dvar);
+		dvar += TALLA_TIPO_SIMPLE;
+		}
 	}
 	;
 
-declaracionFuncion //Pendiente de terminar
-	: tipoSimple ID_ 
-	
-	{niv = 1; cargaContexto(niv);}
+declaracionFuncion
+	: tipoSimple ID_ {if (!insTdS($2, VARIABLE, $1, niv, dvar, -1)) yyerror("Identificador de funcion repetido");
+	niv = 1; cargaContexto(niv);
+	}
 	
 	PARENTESISIZQ_ parametrosFormales PARENTESISDER_ 
-	
-	{insTdS(niv=0);}
+
+	{insTdS($2,FUNCION,$1,niv,dvar,$5);}
 	
 	bloque
 	
-	{if(verTdS) mostrarTdS();
+	{if(obtTdS($2).t != $8){if(strcmp($2, "main") == 0)yyerror("Hay más de un main");
+		else yyerror("Error de tipo en return");}
+	if(verTdS) mostrarTdS();
 	descargaContexto(niv);
 	niv = 0;
 	}
 	;
 
 parametrosFormales
-	: listaParametrosFormales{
-			$$.ref = $1.ref;
-			$$.talla = $1.talla;
-	}
-	| {
-		$$.ref = insTdD(-1, T_VACIO); //Si no tiene parámetros insertamos como vacío
-		$$.talla = 0;
-	  }
+	: listaParametrosFormales{$$= $1;}
+	| {$$ = insTdD(-1, T_VACIO);}
 	;
 
 listaParametrosFormales
-	: tipoSimple ID_ 
-	{	insTdS($2, PARAMETRO, $1, niv, dvar, 0);
-		$$.talla = TALLA_TIPO_SIMPLE;
-		if (insTdD($$.ref, $1) < 0){
+	: tipoSimple ID_ {
+		$$ = insTdD(-1,$1);
+
+		if (!insTdS($2, PARAMETRO, $1, niv, dvar, -1))
 			yyerror("Variable con el mismo identificador ya declarada en struct");
-		}
+		else dvar += TALLA_TIPO_SIMPLE;
+		if(verTdS) mostrarTdS();
 	}
 	| tipoSimple ID_ COMA_ listaParametrosFormales 
 	{
-		if (insTdD($$.ref, $1) < 0){
+		$$ = insTdD($4,$1);
+		if (!insTdS($2, PARAMETRO, $1, niv, dvar, -1))
 			yyerror("Variable con el mismo identificador ya declarada en struct");
-		}
-		insTdS($2, PARAMETRO, $1, niv, dvar, 0);
-		$$.talla = $4.talla + TALLA_TIPO_SIMPLE;
+		else dvar += TALLA_TIPO_SIMPLE;
+		if(verTdS) mostrarTdS();
 	}
 	;
 
 bloque
-	: LLAVEIZQ_ declaracionVariableLocal listaInstrucciones RETURN_ expresion PUNTOCOMA_ LLAVEDER_
+	: LLAVEIZQ_ declaracionVariableLocal listaInstrucciones RETURN_ expresion PUNTOCOMA_ LLAVEDER_ {$$ = $5;}
 	;
 
 declaracionVariableLocal
@@ -202,7 +200,7 @@ instruccionAsignacion
 		SIMB sim = obtTdS($1);
 		SIMB sim2 = obtTdS($3);
 
-		if (sim.t != T_RECORD) {yyerror("La variable no es una estructura.");}
+		if (sim.t != T_RECORD) {yyerror("El identificador debe ser struct");}
 		if($5 != T_ERROR && sim2.t != T_ERROR){
 			if (sim.t == T_ERROR) {
 				yyerror("Objeto no declarado.");
@@ -230,19 +228,18 @@ instruccionEntradaSalida
 	;
 
 instruccionSeleccion
-	: IF_ PARENTESISIZQ_ expresion PARENTESISDER_ instruccion ELSE_ instruccion
-	{
+	: IF_ PARENTESISIZQ_ expresion PARENTESISDER_	{
 		if ($3 != T_ERROR)
 			if ($3 != T_LOGICO) yyerror("La expresion de evaluacion del \"if\" debe ser de tipo logico.");
 	}
+	 instruccion ELSE_ instruccion
 	;
 
 instruccionIteracion
-	: WHILE_ PARENTESISIZQ_ expresion PARENTESISDER_ instruccion
-	{
+	: WHILE_ PARENTESISIZQ_ expresion PARENTESISDER_ 	{
 		if ($3 != T_ERROR)
-			if ($3 != T_LOGICO) yyerror("La expresion de evaluacion del \"while\" debe ser de tipo logico.");
-	}
+			if ($3 != T_LOGICO) yyerror("La expresion de evaluacion del \"while\" debe ser logica");
+	}instruccion
 	;
 
 expresion
@@ -251,8 +248,9 @@ expresion
 	{
 		$$ = T_ERROR;
 		if ($1 != T_ERROR || $3 != T_ERROR) {
-			if (!($1 == $3 && $1 == T_LOGICO)) {
-				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
+			if ($1 != $3 && $1 != T_VACIO && $3 != T_VACIO) {
+				printf("$1 = %d  $3 = %d",$1,$3);
+				yyerror("Incompatibilidad de tipos en expresion logica");
 			} else {
 				$$ = T_LOGICO;
 			}
@@ -268,7 +266,7 @@ expresionIgualdad
 		
 		if ($1 != T_ERROR && $3 != T_ERROR) {
 			if ($1 != $3) {
-				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
+				yyerror("Incompatibilidad de tipos en expresion igualdad");
 			} else if ($3 != T_LOGICO || $3 != T_ENTERO) { 
 				yyerror("Incompatibilidad de tipos, deben ser expresiones logicas o de enteros.");
 			}  else {
@@ -285,7 +283,7 @@ expresionRelacional
             $$ = T_ERROR;
 			if ($1 != T_ERROR && $3 != T_ERROR){
 				if (!($1 == $3 && $1 == T_ENTERO)) {
-					yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
+					yyerror("Error de tipos en expresion relacional");
 				} else {
 					$$ = T_LOGICO;
 				}
@@ -301,7 +299,7 @@ expresionAditiva
         $$ = T_ERROR;
 		if ($1 != T_ERROR && $3 != T_ERROR) {
 			if (!($1 == $3 && $1 == T_ENTERO)) {
-				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
+				yyerror("Error de tipos en expresion aditiva");
 			} else {
 				$$ = T_ENTERO;
 			}
@@ -316,7 +314,7 @@ expresionMultiplicativa
             $$ = T_ERROR;
 			if ($1 != T_ERROR && $3 != T_ERROR) {
 				if (!($1 == $3 && $1 == T_ENTERO)) {
-					yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes. ");
+					yyerror("Incompatibilidad de tipos en expresion multiplicativa");
 				} else {
 					$$ = T_ENTERO;
 				} 
@@ -332,7 +330,7 @@ expresionUnaria
         if ($2 != T_ERROR) {
             if ($2 == T_ENTERO) {                                                                         
                 if ($1 == OPNOT) {
-					yyerror("Incompatibilidad de tipos, no se puede negar un entero.");
+					yyerror("Incompatibilidad de tipos, se está negando un entero");
 			 	} else { 
 					$$ = T_ENTERO; 
 				}
@@ -364,8 +362,13 @@ expresionSufija
 			 }
 		}
   	| ID_ PUNTO_ ID_ {
-  		if (obtTdS($1).t ==T_ERROR) yyerror("Variable no declarada");
-	   	if (obtTdS($3).t == T_ERROR) yyerror("Variable no declarada");
+
+  		if (obtTdS($1).t != T_RECORD){ yyerror("Identificador debe ser struct");}
+  		
+	   	if (obtTdS($3).t == T_ERROR && obtTdS($1).t == T_RECORD) {
+	   		yyerror("Campo no declarado");
+			$$ = T_VACIO;
+			}
 	   	}
 	   
 	| ID_ CORCHETEIZQ_ expresion CORCHETEDER_
@@ -393,6 +396,7 @@ expresionSufija
 				yyerror("No existe ninguna variable con ese identificador."); 
 			}
 			INF inf = obtTdD(sim.ref);
+			if (inf.t
 			if (inf.tipo == T_ERROR) { 
 				yyerror("No existe ninguna funcion con ese identificador."); 
 			} else {

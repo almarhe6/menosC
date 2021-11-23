@@ -96,7 +96,7 @@ union YYSTYPE
 
 	int cent;
 	char *ident;
-	lista lista;
+	int referencia;
 	int expr;
 
 #line 103 "asin.h"
