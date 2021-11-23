@@ -63,8 +63,9 @@ cte	{real}|{entero}
 "," {retornar (COMA_);}
 ";" {retornar (PUNTOCOMA_);}
 
-{cte} {retornar (CTE_);}
-{id} {retornar (ID_);} 
+{cte}        	 { yylval.cent = atoi(yytext); retornar(CTE_); }
+{id}             { yylval.ident = strdup(yytext); retornar(ID_); }
+
 . {yyerror("Caracter desconocido");}
 
 %%

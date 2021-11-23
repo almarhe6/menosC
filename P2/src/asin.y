@@ -8,9 +8,10 @@
 %union{
 	int cent;
 	char *ident;
-	Lista lista;
-	Expresion texp;
+	lista lista;
+	int expr;
 }
+
 
 %token PUNTOCOMA_ CORCHETEIZQ_ CORCHETEDER_ STRUCT_ LLAVEIZQ_ LLAVEDER_ IF_
 %token INT_ BOOL_ 
@@ -25,9 +26,10 @@
 			   operadorAditivo operadorRelacional operadorIgualdad  operadorLogico 
 			   listaDeclaraciones declaracion declaracionFuncion
 
-%type  <texp>  expresion expresionIgualdad expresionRelacional 
+%type  <expr>  expresion expresionIgualdad expresionRelacional 
 			   expresionAditiva expresionMultiplicativa expresionUnaria expresionSufija
                constante
+               
 
 %%
 
@@ -70,42 +72,44 @@ declaracionVariable
 	// insTdR para cada elemento
 	| STRUCT_ LLAVEIZQ_ listaCampos LLAVEDER_ ID_ PUNTOCOMA_ 
 	{
-		if(!insTdS($5, VARIABLE, T_RECORD, niv, dvar, $3.ref) yyerror("Identificador de struct ya utilizado");
+		if(!insTdS($5, VARIABLE, T_RECORD, niv, dvar, $3.ref)) {yyerror("Identificador de struct ya utilizado");}
 		else dvar += $3.talla;
 	}
 	;
 
 tipoSimple
-	: INT_ { $$.t = T_ENTERO; }
-	| BOOL_ { $$.t = T_LOGICO; }
+	: INT_ { $$ = T_ENTERO; }
+	| BOOL_ { $$ = T_LOGICO; }
 	;
 
 listaCampos
 	: tipoSimple ID_ PUNTOCOMA_ {
-								$$.ref = insTdR(-1, $2, $1, 0); 
-								$$.talla = TALLA_TIPO_SIMPLE; 
-								}
+					$$.ref = insTdR(-1, $2, $1, 0); 
+					$$.talla = TALLA_TIPO_SIMPLE; 
+	}
 	| listaCampos tipoSimple ID_ PUNTOCOMA_ {
-		if (insTdR($1.ref, $3, $2, $1.talla) < 0){yyerror("Variable con el mismo identificador ya declarada en struct")
+		if (insTdR($1.ref, $3, $2, $1.talla) < 0){yyerror("Variable con el mismo identificador ya declarada en struct");
 		$$.talla = $1.talla + TALLA_TIPO_SIMPLE;
 		};
 		
 	}
 	;
 
-declaracionFuncion//Pendiente de terminar
+declaracionFuncion //Pendiente de terminar
 	: tipoSimple ID_ 
 	
 	{niv = 1;cargaContexto(niv);}
 	
 	PARENTESISIZQ_ parametrosFormales PARENTESISDER_ 
 	
-	{insTdS(nivel=0);}
+	{insTdS(niv=0);}
 	
 	bloque
 	
-	{mostrarTdS();
-	descargarContexto(niv);}
+	{if(verTdS) mostrarTdS();
+	descargaContexto(niv);
+	niv = 0;
+	}
 	;
 
 parametrosFormales
@@ -124,16 +128,16 @@ listaParametrosFormales
 	{	insTdS($2, PARAMETRO, $1, niv, dvar, 0);
 		$$.talla = TALLA_TIPO_SIMPLE;
 		if (insTdD($2.ref, $1) < 0){
-			yyerror("Variable con el mismo identificador ya declarada en struct")
+			yyerror("Variable con el mismo identificador ya declarada en struct");
 		}
 	}
 	| tipoSimple ID_ COMA_ listaParametrosFormales 
 	{
-		if (insTdD($1.ref, $3) < 0){
-			yyerror("Variable con el mismo identificador ya declarada en struct")
+		if (insTdD($1.ref, $1) < 0){
+			yyerror("Variable con el mismo identificador ya declarada en struct");
 		}
 		insTdS($2, PARAMETRO, $1, niv, dvar, 0);
-		$$.talla = $1.talla + TALLA_TIPO_SIMPLE;
+		$$.talla = $4.talla + TALLA_TIPO_SIMPLE;
 	}
 	;
 
@@ -163,10 +167,10 @@ instruccionAsignacion
 	: ID_ IGUAL_ expresion PUNTOCOMA_
 	{
 		SIMB sim = obtTdS($1);
-		if($3.t != T_ERROR){   
+		if($3 != T_ERROR){   
 			if (sim.t == T_ERROR) {
 				yyerror("No existe ninguna variable con ese identificador.");
-			} else if (! ((sim.t == $3.t && sim.t == T_ENTERO) || (sim.t == $3.t && sim.t == T_LOGICO))) {
+			} else if (! ((sim.t == $3 && sim.t == T_ENTERO) || (sim.t == $3 && sim.t == T_LOGICO))) {
 				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
 			}
 		}
@@ -181,12 +185,12 @@ instruccionAsignacion
 			dim = obtTdA(sim.ref);
 		}
 		
-		if ($3.t != T_ERROR && $6.t != T_ERROR) {                    
+		if ($3 != T_ERROR && $6 != T_ERROR) {                    
 			if (sim.t == T_ERROR) {
 				yyerror("No existe ninguna variable con ese identificador.");
-			} else if (! ($3.t == T_ENTERO)) {
+			} else if (! ($3 == T_ENTERO)) {
 				yyerror("El indice para acceder a un vector debe ser un entero 0 o positivo.");
-			} else if (! ($6.t == dim.telem)) { 
+			} else if (! ($6 == dim.telem)) { 
 				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes."); 
 			}                      
 		}
@@ -197,10 +201,10 @@ instruccionAsignacion
 		SIMB sim2 = obtTdS($3);
 
 		if (sim.t != T_RECORD) {yyerror("La variable no es una estructura.");}
-		if($5.t != T_ERROR && sim2.t != T_ERROR){
+		if($5 != T_ERROR && sim2.t != T_ERROR){
 			if (sim.t == T_ERROR) {
 				yyerror("Objeto no declarado.");
-			}else if(sim2.t != $5.t){
+			}else if(sim2.t != $5){
 				yyerror("Tipos incompatibles.");
 			}
 		}
@@ -217,7 +221,7 @@ instruccionEntradaSalida
 	}
 	| PRINT_ PARENTESISIZQ_ expresion PARENTESISDER_ PUNTOCOMA_
 	{
-		if ($3.t != T_ERROR && $3.t != T_ENTERO) {
+		if ($3 != T_ERROR && $3 != T_ENTERO) {
 			yyerror("El argumento de la funcion print() debe ser de tipo entero.");
 		}
 	}
@@ -226,62 +230,62 @@ instruccionEntradaSalida
 instruccionSeleccion
 	: IF_ PARENTESISIZQ_ expresion PARENTESISDER_ instruccion ELSE_ instruccion
 	{
-		if ($3.t != T_ERROR)
-			if ($3.t != T_LOGICO) yyerror("La expresion de evaluacion del \"if\" debe ser de tipo logico.");
+		if ($3 != T_ERROR)
+			if ($3 != T_LOGICO) yyerror("La expresion de evaluacion del \"if\" debe ser de tipo logico.");
 	}
 	;
 
 instruccionIteracion
 	: WHILE_ PARENTESISIZQ_ expresion PARENTESISDER_ instruccion
 	{
-		if ($3.t != T_ERROR)
-			if ($3.t != T_LOGICO) yyerror("La expresion de evaluacion del \"while\" debe ser de tipo logico.");
+		if ($3 != T_ERROR)
+			if ($3 != T_LOGICO) yyerror("La expresion de evaluacion del \"while\" debe ser de tipo logico.");
 	}
 	;
 
 expresion
-	: expresionIgualdad	{ $$.t = $1.t; }
+	: expresionIgualdad	{ $$ = $1; }
 	| expresion operadorLogico expresionIgualdad
 	{
-		$$.t = T_ERROR;
-		if ($1.t != T_ERROR || $3.t != T_ERROR) {
-			if (!($1.t == $3.t && $1.t == T_LOGICO)) {
+		$$ = T_ERROR;
+		if ($1 != T_ERROR || $3 != T_ERROR) {
+			if (!($1 == $3 && $1 == T_LOGICO)) {
 				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
 			} else {
-				$$.t = T_LOGICO;
+				$$ = T_LOGICO;
 			}
 		}
 	}
 	;
 
 expresionIgualdad
-	: expresionRelacional	{ $$.t = $1.t; }
+	: expresionRelacional	{ $$ = $1; }
 	| expresionIgualdad operadorIgualdad expresionRelacional
 	{	
-		$$.t = T_ERROR;
+		$$ = T_ERROR;
 		
-		if ($1.t != T_ERROR && $3.t != T_ERROR) {
-			if ($1.t != $3.t) {
+		if ($1 != T_ERROR && $3 != T_ERROR) {
+			if ($1 != $3) {
 				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
-			} else if ($3.t != T_LOGICO || $3.t != T_ENTERO) { 
+			} else if ($3 != T_LOGICO || $3 != T_ENTERO) { 
 				yyerror("Incompatibilidad de tipos, deben ser expresiones logicas o de enteros.");
 			}  else {
-				$$.t = T_LOGICO;
+				$$ = T_LOGICO;
 			}
 		} 
 	}
 	;
 
 expresionRelacional
-	: expresionAditiva {$$.t = $1.t;}
+	: expresionAditiva {$$ = $1;}
 	| expresionRelacional operadorRelacional expresionAditiva
 		{
-            $$.t = T_ERROR;
-			if ($1.t != T_ERROR && $3.t != T_ERROR){
-				if (!($1.t == $3.t && $1.t == T_ENTERO)) {
+            $$ = T_ERROR;
+			if ($1 != T_ERROR && $3 != T_ERROR){
+				if (!($1 == $3 && $1 == T_ENTERO)) {
 					yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
 				} else {
-					$$.t = T_LOGICO;
+					$$ = T_LOGICO;
 				}
 			}
 		}
@@ -289,52 +293,52 @@ expresionRelacional
 	;
 
 expresionAditiva
-	: expresionMultiplicativa { $$.t = $1.t; }
+	: expresionMultiplicativa { $$ = $1; }
 	| expresionAditiva operadorAditivo expresionMultiplicativa
 	{
-        $$.t = T_ERROR;
-		if ($1.t != T_ERROR && $3.t != T_ERROR) {
-			if (!($1.t == $3.t && $1.t == T_ENTERO)) {
+        $$ = T_ERROR;
+		if ($1 != T_ERROR && $3 != T_ERROR) {
+			if (!($1 == $3 && $1 == T_ENTERO)) {
 				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
 			} else {
-				$$.t = T_ENTERO;
+				$$ = T_ENTERO;
 			}
 		}
 	}
 	;
 
 expresionMultiplicativa
-	: expresionUnaria {$$.t = $1.t;}
+	: expresionUnaria {$$ = $1;}
 	| expresionMultiplicativa operadorMultiplicativo expresionUnaria
 		{
-            $$.t = T_ERROR;
-			if ($1.t != T_ERROR && $3.t != T_ERROR) {
-				if (!($1.t == $3.t && $1.t == T_ENTERO)) {
+            $$ = T_ERROR;
+			if ($1 != T_ERROR && $3 != T_ERROR) {
+				if (!($1 == $3 && $1 == T_ENTERO)) {
 					yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes. ");
 				} else {
-					$$.t = T_ENTERO;
+					$$ = T_ENTERO;
 				} 
 			}
 		}
 	;
 
 expresionUnaria
-	: expresionSufija	{$$.t = $1.t;}
+	: expresionSufija	{$$ = $1;}
 	| operadorUnario expresionUnaria
 	{  
-        $$.t = T_ERROR;
-        if ($2.t != T_ERROR) {
-            if ($2.t == T_ENTERO) {                                                                         
-                if ($1 == OP_NOT) {
+        $$ = T_ERROR;
+        if ($2 != T_ERROR) {
+            if ($2 == T_ENTERO) {                                                                         
+                if ($1 == OPNOT) {
 					yyerror("Incompatibilidad de tipos, no se puede negar un entero.");
 				} else { 
-					$$.t = T_ENTERO; 
+					$$ = T_ENTERO; 
 				}
-            } else if ($2.t == T_LOGICO) {                                                                  
-                if ($1 == OP_SUMA || $1 == OP_RESTA) {
+            } else if ($2 == T_LOGICO) {                                                                  
+                if ($1 == OPSUMA || $1 == OPRESTA) {
 					yyerror("Incompatibilidad de tipos, solo se puede aplicar el operador unario \"+\" o \"-\" a una expresion entera.");
 				} else { 
-					$$.t = T_LOGICO;
+					$$ = T_LOGICO;
 				}
             } else {
 				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
@@ -344,59 +348,61 @@ expresionUnaria
 	;
 
 expresionSufija
-  	: constante	{$$.t = $1.t;}
-	| PARENTESISIZQ_ expresion PARENTESISDER_	{$$.t = $2.t;}
+  	: constante	{$$ = $1;}
+	| PARENTESISIZQ_ expresion PARENTESISDER_	{$$ = $2;}
 	| ID_
 	{
 			SIMB sim = obtTdS($1);
-			$$.t = T_ERROR;
+			$$ = T_ERROR;
 
 		 	if (sim.t == T_ERROR) {
 				 yyerror("No existe ninguna variable con ese identificador.");
 			 } else { 
-				 $$.t = sim.t;
+				 $$ = sim.t;
 			 }
 		}
-  	| ID_ PUNTO_ ID_ {if (obtTdS($1)==T_ERROR) yyerror("Variable %s no declarada", $1)
-	   if (obtTdS($3) == T_ERROR) yyerror("Variable %s no declarada", $3);}
+  	| ID_ PUNTO_ ID_ {
+  		if (obtTdS($1).t ==T_ERROR) yyerror("Variable no declarada");
+	   	if (obtTdS($3).t == T_ERROR) yyerror("Variable no declarada");
+	   	}
 	   
 	| ID_ CORCHETEIZQ_ expresion CORCHETEDER_
 	{
 		SIMB sim = obtTdS($1);
 		
-		$$.t = T_ERROR;
+		$$ = T_ERROR;
 	
 		if (sim.t == T_ERROR) {
 			yyerror("No existe ninguna variable con ese identificador.");
-		} else if ($3.t != T_ENTERO) {
+		} else if ($3 != T_ENTERO) {
 			yyerror("El indice para acceder a un vector debe ser un entero 0 o positivo.");
 		} else { 
 			DIM dim = obtTdA(sim.ref);
-			$$.t = dim.telem;
+			$$ = dim.telem;
 		}
 	}
 	| ID_ PARENTESISIZQ_ parametrosActuales PARENTESISDER_
 	{
 			SIMB sim = obtTdS($1);
 
-			$$.t = T_ERROR;
+			$$ = T_ERROR;
 			
 			if (sim.t == T_ERROR) { 
 				yyerror("No existe ninguna variable con ese identificador."); 
 			}
 			INF inf = obtTdD(sim.ref);
-			if (inf.t == T_ERROR) { 
+			if (inf.tipo == T_ERROR) { 
 				yyerror("No existe ninguna funcion con ese identificador."); 
 			} else {
-				$$.t = inf.t;
+				$$ = inf.tipo;
 			}
 		}
 	;
 
 constante
-	: CTE_   {$$.t = T_ENTERO;}
-	| TRUE_  {$$.t = T_LOGICO;}
-	| FALSE_ {$$.t = T_LOGICO;}
+	: CTE_   {$$ = T_ENTERO;}
+	| TRUE_  {$$ = T_LOGICO;}
+	| FALSE_ {$$ = T_LOGICO;}
 	;
 
 parametrosActuales
@@ -410,35 +416,35 @@ listaParametrosActuales
 	;
 
 operadorLogico
-	: OPAND_	{$$ = OPAND_;}
-	| OPOR_		{$$ = OPOR_;}
+	: OPAND_	{$$ = OPAND;}
+	| OPOR_		{$$ = OPOR;}
 	;
 
 operadorIgualdad
-	: OPIGUAL_		{$$ = OPIGUAL_;}
-	| OPNOTIGUAL_	{$$ = OPNOTIGUAL_;}
+	: OPIGUAL_		{$$ = OPIGUAL;}
+	| OPNOTIGUAL_	{$$ = OPNOTIGUAL;}
 	;
 
 operadorRelacional
-	: COMPMAYOR_	{$$ = COMPMAYOR_;}
-	| COMPMENOR_	{$$ = COMPMENOR_;}
-	| COMPMAYORIG_	{$$ = COMPMAYORIG_;}
-	| COMPMENORIG_	{$$ = COMPMENORIG_;}
+	: COMPMAYOR_	{$$ = COMPMAYOR;}
+	| COMPMENOR_	{$$ = COMPMENOR;}
+	| COMPMAYORIG_	{$$ = COMPMAYORIG;}
+	| COMPMENORIG_	{$$ = COMPMENORIG;}
 	;
 
 operadorAditivo
-	: OPSUMA_ {$$ = OPSUMA_}
-	| OPRESTA_ {$$ = OPRESTA_}
+	: OPSUMA_ {$$ = OPSUMA;}
+	| OPRESTA_ {$$ = OPRESTA;}
 	;
 
 operadorMultiplicativo
-	: OPMULT_ {$$ = OPMULT_}
-	| OPDIV_  {$$ = OPDIV_}
+	: OPMULT_ {$$ = OPMULT;}
+	| OPDIV_  {$$ = OPDIV;}
 	;
 
 operadorUnario
-	: OPSUMA_ {$$ = OPSUMA_;}
-	| OPRESTA_ {SS = OPRESTA_;}
-	| OPNOT_ {SS = NOT;}
+	: OPSUMA_ {$$ = OPSUMA;}
+	| OPRESTA_ {$$ = OPRESTA;}
+	| OPNOT_ {$$ = OPNOT;}
 	;
 %%

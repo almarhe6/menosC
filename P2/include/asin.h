@@ -50,47 +50,59 @@ extern int yydebug;
   enum yytokentype
   {
     PUNTOCOMA_ = 258,
-    ID_ = 259,
-    CORCHETEIZQ_ = 260,
-    CORCHETEDER_ = 261,
-    CTE_ = 262,
-    STRUCT_ = 263,
-    LLAVEIZQ_ = 264,
-    LLAVEDER_ = 265,
-    IF_ = 266,
-    INT_ = 267,
-    BOOL_ = 268,
-    PARENTESISIZQ_ = 269,
-    PARENTESISDER_ = 270,
-    COMA_ = 271,
-    IGUAL_ = 272,
-    ELSE_ = 273,
-    READ_ = 274,
-    PRINT_ = 275,
-    WHILE_ = 276,
-    RETURN_ = 277,
-    PUNTO_ = 278,
-    TRUE_ = 279,
-    FALSE_ = 280,
-    OPAND_ = 281,
-    OPOR_ = 282,
-    OPIGUAL_ = 283,
-    OPNOTIGUAL_ = 284,
-    COMPMAYOR_ = 285,
-    COMPMENOR_ = 286,
-    COMPMAYORIG_ = 287,
-    COMPMENORIG_ = 288,
-    OPSUMA_ = 289,
-    OPRESTA_ = 290,
-    OPMULT_ = 291,
-    OPDIV_ = 292,
-    OPNOT_ = 293
+    CORCHETEIZQ_ = 259,
+    CORCHETEDER_ = 260,
+    STRUCT_ = 261,
+    LLAVEIZQ_ = 262,
+    LLAVEDER_ = 263,
+    IF_ = 264,
+    INT_ = 265,
+    BOOL_ = 266,
+    PARENTESISIZQ_ = 267,
+    PARENTESISDER_ = 268,
+    COMA_ = 269,
+    IGUAL_ = 270,
+    ELSE_ = 271,
+    READ_ = 272,
+    PRINT_ = 273,
+    WHILE_ = 274,
+    RETURN_ = 275,
+    PUNTO_ = 276,
+    TRUE_ = 277,
+    FALSE_ = 278,
+    OPAND_ = 279,
+    OPOR_ = 280,
+    OPIGUAL_ = 281,
+    OPNOTIGUAL_ = 282,
+    COMPMAYOR_ = 283,
+    COMPMENOR_ = 284,
+    COMPMAYORIG_ = 285,
+    COMPMENORIG_ = 286,
+    OPSUMA_ = 287,
+    OPRESTA_ = 288,
+    OPMULT_ = 289,
+    OPDIV_ = 290,
+    OPNOT_ = 291,
+    CTE_ = 292,
+    ID_ = 293
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 8 "src/asin.y"
+
+	int cent;
+	char *ident;
+	lista lista;
+	int expr;
+
+#line 103 "asin.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

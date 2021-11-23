@@ -998,21 +998,21 @@ YY_RULE_SETUP
 case 37:
 YY_RULE_SETUP
 #line 66 "src/alex.l"
-{retornar (CTE_);}
+{ yylval.cent = atoi(yytext); retornar(CTE_); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 67 "src/alex.l"
-{retornar (ID_);} 
+{ yylval.ident = strdup(yytext); retornar(ID_); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 68 "src/alex.l"
+#line 69 "src/alex.l"
 {yyerror("Caracter desconocido");}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 70 "src/alex.l"
+#line 71 "src/alex.l"
 ECHO;
 	YY_BREAK
 #line 1019 "alex.c"
@@ -1991,6 +1991,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 70 "src/alex.l"
+#line 71 "src/alex.l"
 
 
