@@ -331,7 +331,7 @@ expresionUnaria
             if ($2 == T_ENTERO) {                                                                         
                 if ($1 == OPNOT) {
 					yyerror("Incompatibilidad de tipos, no se puede negar un entero.");
-				} else { 
+			 	} else { 
 					$$ = T_ENTERO; 
 				}
             } else if ($2 == T_LOGICO) {                                                                  
