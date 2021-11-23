@@ -58,15 +58,17 @@ declaracionVariable
 	}
 	| tipoSimple ID_ CORCHETEIZQ_ CTE_ CORCHETEDER_ PUNTOCOMA_
 	{ 
-        if ($4 <= 0) {
-            yyerror("El indice de inicialización de los vectores tiene que ser un entero positivo.");
-        } else {
-			int ref = insTdA($1, $4);
-			if (!insTdS($2, VARIABLE, T_ARRAY, niv, dvar, ref))
-				yyerror("Ya existe un vector con el mismo identificador.");
-			else
-				dvar += $4 * TALLA_TIPO_SIMPLE; 
-		}
+		int numelem = $4;
+        if (numelem <= 0) {
+            yyerror("Talla inapropiada del array");
+			numelem = 0
+        }
+		int ref = insTdA($1, numelem);
+		if (!insTdS($2, VARIABLE, T_ARRAY, niv, dvar, ref))
+			yyerror("Identificador repetido");
+		else
+			dvar += numelem * TALLA_TIPO_SIMPLE; 
+		
 	}
 
 	// insTdR para cada elemento
@@ -98,7 +100,7 @@ listaCampos
 declaracionFuncion //Pendiente de terminar
 	: tipoSimple ID_ 
 	
-	{niv = 1;cargaContexto(niv);}
+	{niv = 1; cargaContexto(niv);}
 	
 	PARENTESISIZQ_ parametrosFormales PARENTESISDER_ 
 	
@@ -118,7 +120,7 @@ parametrosFormales
 			$$.talla = $1.talla;
 	}
 	| {
-		$$.ref = insTdD(-1, T_VACIO);
+		$$.ref = insTdD(-1, T_VACIO); //Si no tiene parámetros insertamos como vacío
 		$$.talla = 0;
 	  }
 	;
@@ -127,13 +129,13 @@ listaParametrosFormales
 	: tipoSimple ID_ 
 	{	insTdS($2, PARAMETRO, $1, niv, dvar, 0);
 		$$.talla = TALLA_TIPO_SIMPLE;
-		if (insTdD($2.ref, $1) < 0){
+		if (insTdD($$.ref, $1) < 0){
 			yyerror("Variable con el mismo identificador ya declarada en struct");
 		}
 	}
 	| tipoSimple ID_ COMA_ listaParametrosFormales 
 	{
-		if (insTdD($1.ref, $1) < 0){
+		if (insTdD($$.ref, $1) < 0){
 			yyerror("Variable con el mismo identificador ya declarada en struct");
 		}
 		insTdS($2, PARAMETRO, $1, niv, dvar, 0);
@@ -169,9 +171,9 @@ instruccionAsignacion
 		SIMB sim = obtTdS($1);
 		if($3 != T_ERROR){   
 			if (sim.t == T_ERROR) {
-				yyerror("No existe ninguna variable con ese identificador.");
+				yyerror("Objeto no declarado");
 			} else if (! ((sim.t == $3 && sim.t == T_ENTERO) || (sim.t == $3 && sim.t == T_LOGICO))) {
-				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes.");
+				yyerror("Error de tipos en la instruccion de asignacion");
 			}
 		}
 	}
