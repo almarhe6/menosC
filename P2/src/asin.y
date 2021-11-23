@@ -99,7 +99,7 @@ listaCampos
 	;
 
 declaracionFuncion
-	: tipoSimple ID_ {if (!insTdS($2, VARIABLE, $1, niv, dvar, -1)) yyerror("Identificador de funcion repetido");
+	: tipoSimple ID_ {if (!insTdS($2, FUNCION, $1, niv, dvar, -1)) yyerror("Identificador de funcion repetido");
 	niv = 1; cargaContexto(niv);
 	}
 	
@@ -396,7 +396,7 @@ expresionSufija
 				yyerror("No existe ninguna variable con ese identificador."); 
 			}
 			INF inf = obtTdD(sim.ref);
-			if (inf.t
+
 			if (inf.tipo == T_ERROR) { 
 				yyerror("No existe ninguna funcion con ese identificador."); 
 			} else {

@@ -555,10 +555,10 @@ static const yytype_int16 yyrline[] =
      126,   134,   145,   149,   150,   154,   155,   159,   160,   161,
      162,   163,   167,   178,   198,   215,   222,   231,   231,   239,
      239,   246,   247,   262,   263,   280,   281,   296,   297,   311,
-     312,   326,   327,   351,   352,   353,   364,   374,   389,   408,
-     409,   410,   414,   415,   419,   420,   424,   425,   429,   430,
-     434,   435,   436,   437,   441,   442,   446,   447,   451,   452,
-     453
+     312,   326,   327,   351,   352,   353,   364,   374,   389,   409,
+     410,   411,   415,   416,   420,   421,   425,   426,   430,   431,
+     435,   436,   437,   438,   442,   443,   447,   448,   452,   453,
+     454
 };
 #endif
 
@@ -1566,7 +1566,7 @@ yyreduce:
 
   case 15:
 #line 102 "src/asin.y"
-                         {if (!insTdS((yyvsp[0].ident), VARIABLE, (yyvsp[-1].cent), niv, dvar, -1)) yyerror("Identificador de funcion repetido");
+                         {if (!insTdS((yyvsp[0].ident), FUNCION, (yyvsp[-1].cent), niv, dvar, -1)) yyerror("Identificador de funcion repetido");
 	niv = 1; cargaContexto(niv);
 	}
 #line 1573 "asin.c"
@@ -1939,125 +1939,126 @@ yyreduce:
 				yyerror("No existe ninguna variable con ese identificador."); 
 			}
 			INF inf = obtTdD(sim.ref);
+
 			if (inf.tipo == T_ERROR) { 
 				yyerror("No existe ninguna funcion con ese identificador."); 
 			} else {
 				(yyval.expr) = inf.tipo;
 			}
 		}
-#line 1949 "asin.c"
+#line 1950 "asin.c"
     break;
 
   case 59:
-#line 408 "src/asin.y"
+#line 409 "src/asin.y"
                  {(yyval.expr) = T_ENTERO;}
-#line 1955 "asin.c"
+#line 1956 "asin.c"
     break;
 
   case 60:
-#line 409 "src/asin.y"
+#line 410 "src/asin.y"
                  {(yyval.expr) = T_LOGICO;}
-#line 1961 "asin.c"
+#line 1962 "asin.c"
     break;
 
   case 61:
-#line 410 "src/asin.y"
+#line 411 "src/asin.y"
                  {(yyval.expr) = T_LOGICO;}
-#line 1967 "asin.c"
+#line 1968 "asin.c"
     break;
 
   case 66:
-#line 424 "src/asin.y"
+#line 425 "src/asin.y"
                         {(yyval.cent) = OPAND;}
-#line 1973 "asin.c"
+#line 1974 "asin.c"
     break;
 
   case 67:
-#line 425 "src/asin.y"
+#line 426 "src/asin.y"
                         {(yyval.cent) = OPOR;}
-#line 1979 "asin.c"
+#line 1980 "asin.c"
     break;
 
   case 68:
-#line 429 "src/asin.y"
+#line 430 "src/asin.y"
                                 {(yyval.cent) = OPIGUAL;}
-#line 1985 "asin.c"
+#line 1986 "asin.c"
     break;
 
   case 69:
-#line 430 "src/asin.y"
+#line 431 "src/asin.y"
                         {(yyval.cent) = OPNOTIGUAL;}
-#line 1991 "asin.c"
+#line 1992 "asin.c"
     break;
 
   case 70:
-#line 434 "src/asin.y"
+#line 435 "src/asin.y"
                         {(yyval.cent) = COMPMAYOR;}
-#line 1997 "asin.c"
+#line 1998 "asin.c"
     break;
 
   case 71:
-#line 435 "src/asin.y"
+#line 436 "src/asin.y"
                         {(yyval.cent) = COMPMENOR;}
-#line 2003 "asin.c"
+#line 2004 "asin.c"
     break;
 
   case 72:
-#line 436 "src/asin.y"
+#line 437 "src/asin.y"
                         {(yyval.cent) = COMPMAYORIG;}
-#line 2009 "asin.c"
+#line 2010 "asin.c"
     break;
 
   case 73:
-#line 437 "src/asin.y"
+#line 438 "src/asin.y"
                         {(yyval.cent) = COMPMENORIG;}
-#line 2015 "asin.c"
+#line 2016 "asin.c"
     break;
 
   case 74:
-#line 441 "src/asin.y"
+#line 442 "src/asin.y"
                   {(yyval.cent) = OPSUMA;}
-#line 2021 "asin.c"
+#line 2022 "asin.c"
     break;
 
   case 75:
-#line 442 "src/asin.y"
+#line 443 "src/asin.y"
                    {(yyval.cent) = OPRESTA;}
-#line 2027 "asin.c"
+#line 2028 "asin.c"
     break;
 
   case 76:
-#line 446 "src/asin.y"
+#line 447 "src/asin.y"
                   {(yyval.cent) = OPMULT;}
-#line 2033 "asin.c"
+#line 2034 "asin.c"
     break;
 
   case 77:
-#line 447 "src/asin.y"
+#line 448 "src/asin.y"
                   {(yyval.cent) = OPDIV;}
-#line 2039 "asin.c"
+#line 2040 "asin.c"
     break;
 
   case 78:
-#line 451 "src/asin.y"
+#line 452 "src/asin.y"
                   {(yyval.cent) = OPSUMA;}
-#line 2045 "asin.c"
+#line 2046 "asin.c"
     break;
 
   case 79:
-#line 452 "src/asin.y"
+#line 453 "src/asin.y"
                    {(yyval.cent) = OPRESTA;}
-#line 2051 "asin.c"
+#line 2052 "asin.c"
     break;
 
   case 80:
-#line 453 "src/asin.y"
+#line 454 "src/asin.y"
                  {(yyval.cent) = OPNOT;}
-#line 2057 "asin.c"
+#line 2058 "asin.c"
     break;
 
 
-#line 2061 "asin.c"
+#line 2062 "asin.c"
 
       default: break;
     }
@@ -2289,5 +2290,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 455 "src/asin.y"
+#line 456 "src/asin.y"
 
