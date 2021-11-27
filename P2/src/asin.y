@@ -21,8 +21,8 @@
 
 %token <cent>  CTE_
 %token <ident> ID_
-%type  <referencia> listaParametrosFormales parametrosFormales listaCampos
-%type  <cent>  tipoSimple operadorUnario operadorMultiplicativo
+%type  <referencia> listaParametrosFormales parametrosFormales listaCampos listaParametrosActuales parametrosActuales
+%type  <cent>  tipoSimple operadorUnario operadorMultiplicativo 
 			   operadorAditivo operadorRelacional operadorIgualdad  operadorLogico 
 			   listaDeclaraciones declaracion declaracionFuncion bloque
 
@@ -99,7 +99,7 @@ listaCampos
 	;
 
 declaracionFuncion
-	: tipoSimple ID_ {if (!insTdS($2, FUNCION, $1, niv, dvar, -1)) yyerror("Identificador de funcion repetido");
+	: tipoSimple ID_ {if (!insTdS($2, FUNCION, $1, niv, dvar, -1)) { yyerror("Identificador de funcion repetido");}
 	niv = 1; cargaContexto(niv);
 	}
 	
@@ -127,7 +127,7 @@ listaParametrosFormales
 		$$ = insTdD(-1,$1);
 
 		if (!insTdS($2, PARAMETRO, $1, niv, dvar, -1))
-			yyerror("Variable con el mismo identificador ya declarada en struct");
+			yyerror("Identificador de parametro repetido");
 		else dvar += TALLA_TIPO_SIMPLE;
 		if(verTdS) mostrarTdS();
 	}
@@ -135,7 +135,7 @@ listaParametrosFormales
 	{
 		$$ = insTdD($4,$1);
 		if (!insTdS($2, PARAMETRO, $1, niv, dvar, -1))
-			yyerror("Variable con el mismo identificador ya declarada en struct");
+			yyerror("Identificador de parametro repetido");
 		else dvar += TALLA_TIPO_SIMPLE;
 		if(verTdS) mostrarTdS();
 	}
@@ -386,8 +386,9 @@ expresionSufija
 			$$ = dim.telem;
 		}
 	}
-	| ID_ PARENTESISIZQ_ parametrosActuales PARENTESISDER_
+	| ID_ PARENTESISIZQ_ parametrosActuales {SIMB sim = obtTdS($1); if (!cmpDom(sim.ref, $3)){yyerror("Tipos de parametros incorrectos");}} PARENTESISDER_
 	{
+			
 			SIMB sim = obtTdS($1);
 
 			$$ = T_ERROR;
@@ -396,11 +397,18 @@ expresionSufija
 				yyerror("No existe ninguna variable con ese identificador."); 
 			}
 			INF inf = obtTdD(sim.ref);
-
-			if (inf.tipo == T_ERROR) { 
+			
+			if (inf.tipo != FUNCION) { 
+				
 				yyerror("No existe ninguna funcion con ese identificador."); 
-			} else {
+			}
+
+			 
+			
+			else {
+				
 				$$ = inf.tipo;
+				
 			}
 		}
 	;
@@ -412,13 +420,13 @@ constante
 	;
 
 parametrosActuales
-	:
-	| listaParametrosActuales
+	: {$$ = insTdD(-1, T_VACIO);} 
+	| listaParametrosActuales{ $$ = $1;} 
 	;
 
 listaParametrosActuales
-	: expresion 
-	| expresion COMA_ listaParametrosActuales 
+	: expresion {$$ = insTdD(-1, $1);} 
+	| expresion COMA_ listaParametrosActuales{ $$ = insTdD($3, $1);} 
 	;
 
 operadorLogico
