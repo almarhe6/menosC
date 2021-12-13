@@ -99,7 +99,11 @@ listaCampos
 	;
 
 declaracionFuncion
+<<<<<<< HEAD
 	: tipoSimple ID_ {
+=======
+	: tipoSimple ID_ {if (!insTdS($2, FUNCION, $1, niv, dvar, -1)) { yyerror("Identificador de funcion repetido");}
+>>>>>>> 75717d664c6cd879fa944988b798a50776a6fd2f
 	niv = 1; cargaContexto(niv);
 	}
 	
@@ -388,7 +392,11 @@ expresionSufija
 			$$ = dim.telem;
 		}
 	}
+<<<<<<< HEAD
 	| ID_ PARENTESISIZQ_ parametrosActuales {SIMB sim = obtTdS($1); if (!cmpDom(sim.ref, $3)){yyerror("Error en el dominio de los parámetros actuales");}} PARENTESISDER_ 
+=======
+	| ID_ PARENTESISIZQ_ parametrosActuales {SIMB sim = obtTdS($1); if (!cmpDom(sim.ref, $3)){yyerror("Tipos de parametros incorrectos");}} PARENTESISDER_
+>>>>>>> 75717d664c6cd879fa944988b798a50776a6fd2f
 	{
 			
 			SIMB sim = obtTdS($1);
@@ -400,8 +408,22 @@ expresionSufija
 			}
 			INF inf = obtTdD(sim.ref);
 			
+<<<<<<< HEAD
 			if (inf.tipo == T_ERROR) { 
 				yyerror("No existe ninguna funcion con ese identificador."); 
+=======
+			if (inf.tipo != FUNCION) { 
+				
+				yyerror("No existe ninguna funcion con ese identificador."); 
+			}
+
+			 
+			
+			else {
+				
+				$$ = inf.tipo;
+				
+>>>>>>> 75717d664c6cd879fa944988b798a50776a6fd2f
 			}
 			else {$$ = inf.tipo;}
 		}

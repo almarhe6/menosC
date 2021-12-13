@@ -552,6 +552,7 @@ static const yytype_int16 yyrline[] =
 {
        0,    36,    36,    36,    41,    42,    46,    47,    51,    59,
       74,    83,    84,    88,    92,   102,   108,   102,   121,   122,
+<<<<<<< HEAD
      126,   134,   145,   151,   152,   156,   157,   161,   162,   163,
      164,   165,   169,   180,   200,   217,   224,   233,   233,   241,
      241,   248,   249,   264,   265,   282,   283,   298,   299,   313,
@@ -559,6 +560,15 @@ static const yytype_int16 yyrline[] =
      411,   412,   413,   417,   418,   422,   423,   427,   428,   432,
      433,   437,   438,   439,   440,   444,   445,   449,   450,   454,
      455,   456
+=======
+     126,   134,   145,   149,   150,   154,   155,   159,   160,   161,
+     162,   163,   167,   178,   198,   215,   222,   231,   231,   239,
+     239,   246,   247,   262,   263,   280,   281,   296,   297,   311,
+     312,   326,   327,   351,   352,   353,   364,   374,   389,   409,
+     410,   411,   415,   416,   420,   421,   425,   426,   430,   431,
+     435,   436,   437,   438,   442,   443,   447,   448,   452,   453,
+     454
+>>>>>>> 75717d664c6cd879fa944988b798a50776a6fd2f
 };
 #endif
 
@@ -1566,7 +1576,11 @@ yyreduce:
 
   case 15:
 #line 102 "src/asin.y"
+<<<<<<< HEAD
                          {
+=======
+                         {if (!insTdS((yyvsp[0].ident), FUNCION, (yyvsp[-1].cent), niv, dvar, -1)) yyerror("Identificador de funcion repetido");
+>>>>>>> 75717d664c6cd879fa944988b798a50776a6fd2f
 	niv = 1; cargaContexto(niv);
 	}
 #line 1573 "asin.c"
@@ -1947,12 +1961,17 @@ yyreduce:
 				yyerror("No existe ninguna variable con ese identificador."); 
 			}
 			INF inf = obtTdD(sim.ref);
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> 75717d664c6cd879fa944988b798a50776a6fd2f
 			if (inf.tipo == T_ERROR) { 
 				yyerror("No existe ninguna funcion con ese identificador."); 
 			}
 			else {(yyval.expr) = inf.tipo;}
 		}
+<<<<<<< HEAD
 #line 1957 "asin.c"
     break;
 
@@ -2090,6 +2109,121 @@ yyreduce:
 
 
 #line 2093 "asin.c"
+=======
+#line 1950 "asin.c"
+    break;
+
+  case 59:
+#line 409 "src/asin.y"
+                 {(yyval.expr) = T_ENTERO;}
+#line 1956 "asin.c"
+    break;
+
+  case 60:
+#line 410 "src/asin.y"
+                 {(yyval.expr) = T_LOGICO;}
+#line 1962 "asin.c"
+    break;
+
+  case 61:
+#line 411 "src/asin.y"
+                 {(yyval.expr) = T_LOGICO;}
+#line 1968 "asin.c"
+    break;
+
+  case 66:
+#line 425 "src/asin.y"
+                        {(yyval.cent) = OPAND;}
+#line 1974 "asin.c"
+    break;
+
+  case 67:
+#line 426 "src/asin.y"
+                        {(yyval.cent) = OPOR;}
+#line 1980 "asin.c"
+    break;
+
+  case 68:
+#line 430 "src/asin.y"
+                                {(yyval.cent) = OPIGUAL;}
+#line 1986 "asin.c"
+    break;
+
+  case 69:
+#line 431 "src/asin.y"
+                        {(yyval.cent) = OPNOTIGUAL;}
+#line 1992 "asin.c"
+    break;
+
+  case 70:
+#line 435 "src/asin.y"
+                        {(yyval.cent) = COMPMAYOR;}
+#line 1998 "asin.c"
+    break;
+
+  case 71:
+#line 436 "src/asin.y"
+                        {(yyval.cent) = COMPMENOR;}
+#line 2004 "asin.c"
+    break;
+
+  case 72:
+#line 437 "src/asin.y"
+                        {(yyval.cent) = COMPMAYORIG;}
+#line 2010 "asin.c"
+    break;
+
+  case 73:
+#line 438 "src/asin.y"
+                        {(yyval.cent) = COMPMENORIG;}
+#line 2016 "asin.c"
+    break;
+
+  case 74:
+#line 442 "src/asin.y"
+                  {(yyval.cent) = OPSUMA;}
+#line 2022 "asin.c"
+    break;
+
+  case 75:
+#line 443 "src/asin.y"
+                   {(yyval.cent) = OPRESTA;}
+#line 2028 "asin.c"
+    break;
+
+  case 76:
+#line 447 "src/asin.y"
+                  {(yyval.cent) = OPMULT;}
+#line 2034 "asin.c"
+    break;
+
+  case 77:
+#line 448 "src/asin.y"
+                  {(yyval.cent) = OPDIV;}
+#line 2040 "asin.c"
+    break;
+
+  case 78:
+#line 452 "src/asin.y"
+                  {(yyval.cent) = OPSUMA;}
+#line 2046 "asin.c"
+    break;
+
+  case 79:
+#line 453 "src/asin.y"
+                   {(yyval.cent) = OPRESTA;}
+#line 2052 "asin.c"
+    break;
+
+  case 80:
+#line 454 "src/asin.y"
+                 {(yyval.cent) = OPNOT;}
+#line 2058 "asin.c"
+    break;
+
+
+#line 2062 "asin.c"
+>>>>>>> 75717d664c6cd879fa944988b798a50776a6fd2f
 
       default: break;
     }
@@ -2321,5 +2455,9 @@ yyreturn:
 #endif
   return yyresult;
 }
+<<<<<<< HEAD
 #line 458 "src/asin.y"
+=======
+#line 456 "src/asin.y"
+>>>>>>> 75717d664c6cd879fa944988b798a50776a6fd2f
 
