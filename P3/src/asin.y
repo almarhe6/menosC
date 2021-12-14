@@ -441,8 +441,8 @@ operadorRelacional
 	;
 
 operadorAditivo
-	: OPSUMA_ {$$ = OPSUMA;}
-	| OPRESTA_ {$$ = OPRESTA;}
+	: ESUM {$$ = OPSUMA;}
+	| EDIF {$$ = OPRESTA;}
 	;
 
 operadorMultiplicativo
