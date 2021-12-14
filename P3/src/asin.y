@@ -17,7 +17,7 @@
 %token INT_ BOOL_ 
 %token PARENTESISIZQ_ PARENTESISDER_ COMA_ IGUAL_ ELSE_ READ_ PRINT_ WHILE_ RETURN_
 %token PUNTO_ TRUE_ FALSE_ OPAND_ OPOR_ OPIGUAL_ OPNOTIGUAL_ COMPMAYOR_ COMPMENOR_ COMPMAYORIG_
-%token COMPMENORIG_ OPSUMA_ OPRESTA_ OPMULT_ OPDIV_ OPNOT_
+%token COMPMENORIG_ ESUM EDIF EMULT EDIVI OPNOT_
 
 %token <cent>  CTE_
 %token <ident> ID_
@@ -446,13 +446,13 @@ operadorAditivo
 	;
 
 operadorMultiplicativo
-	: OPMULT_ {$$ = OPMULT;}
-	| OPDIV_  {$$ = OPDIV;}
+	: EMULT {$$ = OPMULT;}
+	| EDIVI  {$$ = OPDIV;}
 	;
 
 operadorUnario
-	: OPSUMA_ {$$ = OPSUMA;}
-	| OPRESTA_ {$$ = OPRESTA;}
+	: ESUM {$$ = OPSUMA;}
+	| EDIF {$$ = OPRESTA;}
 	| OPNOT_ {$$ = OPNOT;}
 	;
 %%
