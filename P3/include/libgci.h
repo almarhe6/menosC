@@ -42,6 +42,7 @@
 #define TOPFP        26
 #define INCTOP       27
 #define DECTOP       28
+#define ENOT         29
 /*************************** Variables globales de uso en todo el compilador */
 int si;                       /* Desplazamiento en el Segmento de Codigo     */
 
