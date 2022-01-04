@@ -164,29 +164,38 @@ listaParametrosFormales
 	;
 
 bloque
-	: LLAVEIZQ_ {
-        emite(PUSHFP, crArgNul(), crArgNul(), crArgNul() );
-        emite(FPTOP, crArgNul(), crArgNul(), crArgNul() );
-        $<cent>$ = creaLans(si);
-        //Variables locales               
-        emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(-1) ); 
+	: LLAVEIZQ_ 
+		{
+			emite(PUSHFP, crArgNul(), crArgNul(), crArgNul() );
+			emite(FPTOP, crArgNul(), crArgNul(), crArgNul() );
+			$<cent>$ = creaLans(si);
+			//Variables locales               
+			emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(-1) ); 
       	}  
       	declaracionVariableLocal listaInstrucciones RETURN_ expresion PUNTOCOMA_ LLAVEDER_ 
-	{
-	INF inf = obtTdD(-1);
-	if(inf.tipo == T_ERROR){yyerror("Return fuera de función");}
-	else if(inf.tipo != $6.tipo) yyerror("Error de tipo en return");
-	
-	completaLans($<cent>2, crArgEnt(dvar));
-	
-	int seg = TALLA_SEGENLACES + TALLA_TIPO_SIMPLE + inf.tsp;
-        emite(EASIG, crArgPos(niv, $6.desp), crArgNul(), crArgPos(niv, -seg));
-        emite(TOPFP, crArgNul(), crArgNul(), crArgNul() );
-        emite(FPPOP, crArgNul(), crArgNul(), crArgNul() );
-        //Si es main se acaba, si no retorna
-        if (strcmp(inf.nom,"main") == 0) { emite(FIN, crArgNul(), crArgNul(), crArgNul()); }
-        else { emite(RET, crArgNul(), crArgNul(), crArgNul()); }
-	}
+		{
+			INF inf = obtTdD(-1);
+			if(inf.tipo == T_ERROR){
+				yyerror("Return fuera de función");
+			}
+			else if(inf.tipo != $6.tipo){
+				yyerror("Error de tipo en return");
+			}
+			
+			completaLans($<cent>2, crArgEnt(dvar));
+			
+			int seg = TALLA_SEGENLACES + TALLA_TIPO_SIMPLE + inf.tsp;
+			emite(EASIG, crArgPos(niv, $6.desp), crArgNul(), crArgPos(niv, -seg));
+			emite(TOPFP, crArgNul(), crArgNul(), crArgNul() );
+			emite(FPPOP, crArgNul(), crArgNul(), crArgNul() );
+			//Si es main se acaba, si no retorna
+			if (strcmp(inf.nom,"main") == 0) {
+				emite(FIN, crArgNul(), crArgNul(), crArgNul()); 
+			}
+			else {
+				emite(RET, crArgNul(), crArgNul(), crArgNul()); 
+			}
+		}
 	;
 
 declaracionVariableLocal
