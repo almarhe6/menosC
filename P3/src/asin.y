@@ -227,6 +227,8 @@ instruccionAsignacion
 				yyerror("Error de tipos en la instruccion de asignacion");
 			}
 		}
+
+		emite(EASIG, crArgPos(niv, $3.desp), crArgNul(), crArgPos(niv, sim.d));
 	}
 	| ID_ CORCHETEIZQ_ expresion CORCHETEDER_ IGUAL_ expresion PUNTOCOMA_
 	{
@@ -291,10 +293,17 @@ instruccionSeleccion
 	;
 
 instruccionIteracion
-	: WHILE_ PARENTESISIZQ_ expresion PARENTESISDER_ 	{
-		if ($3.tipo != T_ERROR)
-			if ($3.tipo != T_LOGICO) yyerror("La expresion de evaluacion del \"while\" debe ser logica");
-	} instruccion
+	: WHILE_
+		{
+		} 
+	PARENTESISIZQ_ expresion PARENTESISDER_ 	
+		{
+			if ($3.tipo != T_ERROR){ 
+				if ($3.tipo != T_LOGICO) yyerror("La expresion de evaluacion del \"while\" debe ser logica");
+			}
+			
+		} 
+	instruccion
 	;
 
 expresion
@@ -385,7 +394,7 @@ expresionMultiplicativa
 	: expresionUnaria {$$ = $1;}
 	| expresionMultiplicativa operadorMultiplicativo expresionUnaria
 		{
-            		$$.tipo = T_ERROR;
+            $$.tipo = T_ERROR;
 			if ($1.tipo != T_ERROR && $3.tipo != T_ERROR) {
 				if (!($1.tipo == $3.tipo && $1.tipo == T_ENTERO)) {
 					yyerror("Incompatibilidad de tipos en expresion multiplicativa");
@@ -394,7 +403,7 @@ expresionMultiplicativa
 				} 
 			}
 			$$.desp = creaVarTemp();
-        		emite($2, crArgPos(niv, $1.desp), crArgPos(niv, $3.desp), crArgPos(niv, $$.desp));
+        	emite($2, crArgPos(niv, $1.desp), crArgPos(niv, $3.desp), crArgPos(niv, $$.desp));
 		}
 	;
 
@@ -430,8 +439,10 @@ expresionUnaria
 	;
 
 expresionSufija
-  	: constante	{$$.tipo = $1.tipo; $$.desp = $1.desp;
-  		emite(EASIG, crArgEnt($1.desp), crArgNul(), crArgPos(niv, $$.desp)); }
+  	: constante	{
+		$$.tipo = $1.tipo;
+		$$.desp = creaVarTemp();
+  		emite(EASIG, crArgEnt($1.valor), crArgNul(), crArgPos(niv, $$.desp)); }
 	| PARENTESISIZQ_ expresion PARENTESISDER_	{$$ = $2;}
 	| ID_
 	{
@@ -443,8 +454,8 @@ expresionSufija
 		 } else { 
 			 $$.tipo = sim.t;
 		 }
-	         $$.desp = creaVarTemp();
-		 emite(EASIG, crArgPos(niv, sim.d), crArgNul(), crArgPos(niv, $$.desp));   
+	    $$.desp = creaVarTemp();
+		emite(EASIG, crArgPos(niv, sim.d), crArgNul(), crArgPos(niv, $$.desp));   
 	}
   	| ID_ PUNTO_ ID_ {
 
@@ -471,7 +482,7 @@ expresionSufija
 			$$.tipo = dim.telem;
 		}
 		$$.desp = creaVarTemp();
-        	emite(EAV, crArgPos(sim.n, sim.d), crArgPos(niv, $3.desp), crArgPos(niv, $$.desp)); 
+        emite(EAV, crArgPos(sim.n, sim.d), crArgPos(niv, $3.desp), crArgPos(niv, $$.desp)); 
 	}
 	| ID_ PARENTESISIZQ_    
 		{  emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(TALLA_TIPO_SIMPLE)); } 
@@ -498,9 +509,9 @@ expresionSufija
 	;
 
 constante
-	: CTE_   {$$.tipo = T_ENTERO; $$.desp = $1;}
-	| TRUE_  {$$.tipo = T_LOGICO; $$.desp = 1;}
-	| FALSE_ {$$.tipo = T_LOGICO; $$.desp = 0;}
+	: CTE_   {$$.tipo = T_ENTERO; $$.valor = $1;}
+	| TRUE_  {$$.tipo = T_LOGICO; $$.valor = 1;}
+	| FALSE_ {$$.tipo = T_LOGICO; $$.valor = 0;}
 	;
 
 parametrosActuales

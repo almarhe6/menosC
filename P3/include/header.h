@@ -48,6 +48,7 @@ extern int si; 			/* Desplazamiento relativo en el Segmento de Codigo */
 typedef struct Estructura{
 	int tipo;
 	int desp;
+   int valor;
 } ESTRUCT;
 
 #endif  /* _HEADER_H */
