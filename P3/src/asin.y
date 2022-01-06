@@ -293,17 +293,23 @@ instruccionSeleccion
 	;
 
 instruccionIteracion
-	: WHILE_
+	: WHILE_ 
 		{
-		} 
+			$<cent>$ = si;
+		}				
 	PARENTESISIZQ_ expresion PARENTESISDER_ 	
 		{
-			if ($3.tipo != T_ERROR){ 
-				if ($3.tipo != T_LOGICO) yyerror("La expresion de evaluacion del \"while\" debe ser logica");
+			if ($4.tipo != T_ERROR){ 
+				if ($4.tipo != T_LOGICO) yyerror("La expresion de evaluacion del \"while\" debe ser logica");
 			}
-			
+			$<cent>$ = creaLans(si);
+        	emite(EIGUAL, crArgPos(niv, $4.desp), crArgEnt(FALSE), crArgEtq($<cent>$));
 		} 
 	instruccion
+		{
+			emite(GOTOS, crArgNul(), crArgNul(), crArgEtq($<cent>2));
+        	completaLans($<cent>6, crArgEtq(si));
+		}	
 	;
 
 expresion
