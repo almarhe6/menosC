@@ -41,19 +41,23 @@ int dvaraux;
 
 %%
 
-programa: { si=0; dvar=0; niv = 0;  cargaContexto(niv); 
+programa: 
+	{ 
+		si=0; dvar=0; niv = 0;  cargaContexto(niv); 
 		$<refaux>$.r1 = creaLans(si);
 		emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(-1)); //Variables globales
 		$<refaux>$.r2 = creaLans(si);
         emite(GOTOS, crArgNul(), crArgNul(), crArgEtq(-1)); //Empieza
 	}
-    listaDeclaraciones { 
-		completaLans($<refaux>1.r1, crArgEnt(dvar));
-		if(verTdS) mostrarTdS(); if(obtTdS("main").t == T_ERROR) yyerror("El programa no tiene main"); 
-		SIMB sim = obtTdS("main");
-		$<refaux>$.r3 = sim.d;
 
-		completaLans($<refaux>1.r2, crArgEtq($<refaux>$.r3));
+    listaDeclaraciones 
+		{ 
+			completaLans($<refaux>1.r1, crArgEnt(dvar));
+			if(verTdS) mostrarTdS(); if(obtTdS("main").t == T_ERROR) yyerror("El programa no tiene main"); 
+			SIMB sim = obtTdS("main");
+			$<refaux>$.r3 = sim.d;
+
+			completaLans($<refaux>1.r2, crArgEtq($<refaux>$.r3));
 		}
     ;
 
@@ -63,8 +67,8 @@ listaDeclaraciones
     ;
 
 declaracion
-    : declaracionVariable { $$ = 0;}
-    | declaracionFuncion { $$ = $1; }
+    : declaracionVariable {$$ = 0;} 
+    | declaracionFuncion  { $$ = $1; }
     ;
 
 declaracionVariable
@@ -140,8 +144,14 @@ declaracionFuncion
 	;
 
 parametrosFormales
-	: listaParametrosFormales{$$= $1; $$.talla = $1.talla;}
-	| {$$.ref = insTdD(-1, T_VACIO); $$.talla=0;}
+	: listaParametrosFormales
+		{
+			$$= $1; $$.talla = $1.talla;
+		}
+	| 
+		{
+			$$.ref = insTdD(-1, T_VACIO); $$.talla=0;
+		}
 	;
 
 listaParametrosFormales
