@@ -45,7 +45,7 @@ programa: { si=0; dvar=0; niv = 0;  cargaContexto(niv);
 		$<refaux>$.r1 = creaLans(si);
 		emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(-1)); //Variables globales
 		$<refaux>$.r2 = creaLans(si);
-        	emite(GOTOS, crArgNul(), crArgNul(), crArgEtq(-1)); //Empieza
+        emite(GOTOS, crArgNul(), crArgNul(), crArgEtq(-1)); //Empieza
 	}
     listaDeclaraciones { 
 		completaLans($<refaux>1.r1, crArgEnt(dvar));
@@ -285,11 +285,24 @@ instruccionEntradaSalida
 	;
 
 instruccionSeleccion
-	: IF_ PARENTESISIZQ_ expresion PARENTESISDER_	{
-		if ($3.tipo != T_ERROR)
-			if ($3.tipo != T_LOGICO) yyerror("La expresion de evaluacion del \"if\" debe ser de tipo logico.");
-	}
-	 instruccion ELSE_ instruccion
+	: IF_ PARENTESISIZQ_ expresion PARENTESISDER_
+		{
+			if ($3.tipo != T_ERROR){
+				if ($3.tipo != T_LOGICO) yyerror("La expresion de evaluacion del \"if\" debe ser de tipo logico.");
+			} 
+			$<cent>$ = creaLans(si);
+			emite(EIGUAL, crArgPos(niv, $3.desp), crArgEnt(FALSE), crArgEtq($<cent>$));
+		}
+	instruccion 
+		{
+			$<cent>$ = creaLans(si);
+			emite(GOTOS, crArgNul(), crArgNul(), crArgEtq($<cent>$));
+			completaLans($<cent>5, crArgEtq(si));
+		} 
+	ELSE_ instruccion
+	{
+		completaLans($<cent>7, crArgEtq(si));
+	} 
 	;
 
 instruccionIteracion
@@ -345,7 +358,7 @@ expresionIgualdad
 		if ($1.tipo != T_ERROR && $3.tipo != T_ERROR) {
 			if ($1.tipo != $3.tipo) {
 				yyerror("Incompatibilidad de tipos en expresion igualdad");
-			} else if ($3.tipo != T_LOGICO || $3.tipo != T_ENTERO) { 
+			} else if ($3.tipo != T_LOGICO && $3.tipo != T_ENTERO) { 
 				yyerror("Incompatibilidad de tipos, deben ser expresiones logicas o de enteros.");
 			}  else {
 				$$.tipo = T_LOGICO;

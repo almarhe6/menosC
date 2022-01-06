@@ -1,18 +1,19 @@
-int b;
-int c;
-bool x;
-int casdf;
-
 
 int main ()
-{ int a;
-int z;
-b = 7;
+{int x; int y; bool z;
 
-  while(b > 0){
-      b = b - 1;
+  z= true;
+  while (z) {
+    read(x); read(y);
+    if ((x != y) || false)          
+      if (!(x == 0) && true)                      
+        if ((y > 0) && (x >= 0))
+          if (y-x < 0) { print(x-y); z = false; }
+          else { print(y-x); z = false; }
+        else {}
+      else {}
+    else {}
   }
-  print(b);
-  
-  return 0;
+
+    return 0;
 }

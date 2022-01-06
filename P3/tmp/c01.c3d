@@ -1,5 +1,5 @@
-  0 INCTOP              ,            ,  i:   0    
-  1 GOTOS               ,            ,  e:   0    
+  0 INCTOP              ,            ,  i:   1    
+  1 GOTOS               ,            ,  e:   1    
   2 PUSHFP              ,            ,            
   3 FPTOP               ,            ,            
   4 INCTOP              ,            ,  i:  36    
@@ -24,9 +24,9 @@
  23 EASIG     i:   1    ,            ,  p: (1, 12)
  24 EIGUAL    p: (1, 10),  p: (1, 11),  e:  26    
  25 EASIG     i:   0    ,            ,  p: (1, 12)
- 26 EDIF      i:   1    ,  p: (1, 12),  p: (1,22033)
+ 26 EDIF      i:   1    ,  p: (1, 12),  p: (1,21971)
  27 EASIG     i:   1    ,            ,  p: (1, 13)
- 28 EMULT     p: (1,22033),  p: (1, 13),  p: (1, 14)
+ 28 EMULT     p: (1,21971),  p: (1, 13),  p: (1, 14)
  29 EIGUAL    p: (1, 14),  i:   0    ,  e:  65    
  30 EASIG     p: (1,  1),            ,  p: (1, 15)
  31 EASIG     i:   0    ,            ,  p: (1, 16)
