@@ -1,4 +1,5 @@
 //Pruebas
+int y;
 int main ()
 {
     int x;

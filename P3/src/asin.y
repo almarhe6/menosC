@@ -53,7 +53,8 @@ programa:
     listaDeclaraciones 
 		{ 
 			completaLans($<refaux>1.r1, crArgEnt(dvar));
-			if(verTdS) mostrarTdS(); if(obtTdS("main").t == T_ERROR) yyerror("El programa no tiene main"); 
+			if(verTdS) mostrarTdS();
+			if(obtTdS("main").t == T_ERROR) yyerror("El programa no tiene main"); 
 			SIMB sim = obtTdS("main");
 			$<refaux>$.r3 = sim.d;
 
@@ -109,10 +110,11 @@ tipoSimple
 	;
 
 listaCampos
-	: tipoSimple ID_ PUNTOCOMA_ {
-					$$.ref = insTdR(-1, $2, $1, 0); 
-					dvar += TALLA_TIPO_SIMPLE; 
-	}
+	: tipoSimple ID_ PUNTOCOMA_ 
+		{
+			$$.ref = insTdR(-1, $2, $1, 0);
+			dvar += TALLA_TIPO_SIMPLE; 
+		}
 	| listaCampos tipoSimple ID_ PUNTOCOMA_ {
 		if (insTdR($$.ref, $3, $2, dvar) == -1) yyerror("Campo de struct ya declarado");
 		else{
@@ -123,46 +125,53 @@ listaCampos
 	;
 
 declaracionFuncion
-	: tipoSimple ID_ {
-	niv = 1; cargaContexto(niv);
-	}
+	: tipoSimple ID_
+		{
+			niv = 1; cargaContexto(niv);
+		}
 	
 	PARENTESISIZQ_ parametrosFormales PARENTESISDER_ 
 
-	{if(!insTdS($2,FUNCION,$1,niv-1,dvar,$5.ref)) yyerror("Ya hay una función con ese nombre");
-	$<cent>$ = dvar;dvaraux=dvar; dvar = 0;
-	}
-	
+		{
+			if(!insTdS($2,FUNCION,$1,niv-1,dvar,$5.ref)) yyerror("Ya hay una función con ese nombre");
+			$<cent>$ = dvar;
+			dvaraux=dvar;
+			dvar = 0;
+		}
+		
 	bloque
-	
-	{
-	if(verTdS) mostrarTdS();
-	descargaContexto(niv);
-	niv = 0;
-	dvar = dvaraux;
-	}
+		
+		{
+			if(verTdS) mostrarTdS();
+			descargaContexto(niv);
+			niv = 0;
+			dvar = dvaraux;
+		}
 	;
 
 parametrosFormales
 	: listaParametrosFormales
 		{
-			$$= $1; $$.talla = $1.talla;
+			$$= $1;
+			$$.talla = $1.talla;
 		}
 	| 
 		{
-			$$.ref = insTdD(-1, T_VACIO); $$.talla=0;
+			$$.ref = insTdD(-1, T_VACIO);
+			$$.talla = 0;
 		}
 	;
 
 listaParametrosFormales
-	: tipoSimple ID_ {
-		$$.ref = insTdD(-1,$1);
-		
-		if (!insTdS($2, PARAMETRO, $1, niv, -$$.talla, -1))
-			yyerror("Identificador de parametro repetido");
-		$$.talla += TALLA_SEGENLACES + TALLA_TIPO_SIMPLE;
-		if(verTdS) mostrarTdS();
-	}
+	: tipoSimple ID_
+		{
+			$$.ref = insTdD(-1,$1);
+			
+			if (!insTdS($2, PARAMETRO, $1, niv, -$$.talla, -1))
+				yyerror("Identificador de parametro repetido");
+			$$.talla += TALLA_SEGENLACES + TALLA_TIPO_SIMPLE;
+			if(verTdS) mostrarTdS();
+		}
 	| tipoSimple ID_ COMA_ listaParametrosFormales 
 	{
 		$$.ref = insTdD($4.ref,$1);
