@@ -272,13 +272,14 @@ instruccionAsignacion
   	| ID_ PUNTO_ ID_ IGUAL_ expresion PUNTOCOMA_
 	  {
 		SIMB sim = obtTdS($1);
-		SIMB sim2 = obtTdS($3);
+		CAMP camp2 = obtTdR(sim.ref, $3);
 
 		if (sim.t != T_RECORD) {yyerror("El identificador debe ser struct");}
-		if($5.tipo != T_ERROR && sim2.t != T_ERROR){
+		if (camp2.t == T_ERROR) {yyerror("Campo no declarado");}
+		if($5.tipo != T_ERROR && camp2.t != T_ERROR){
 			if (sim.t == T_ERROR) {
 				yyerror("Objeto no declarado.");
-			}else if(sim2.t != $5.tipo){
+			}else if(camp2.t != $5.tipo){
 				yyerror("Tipos incompatibles.");
 			}
 		}
@@ -496,15 +497,20 @@ expresionSufija
 	    $$.desp = creaVarTemp();
 		emite(EASIG, crArgPos(niv, sim.d), crArgNul(), crArgPos(niv, $$.desp));   
 	}
-  	| ID_ PUNTO_ ID_ {
+  	| ID_ PUNTO_ ID_ 
+	  	{
+			SIMB sim = obtTdS($1);
+			CAMP camp2 = obtTdR(sim.ref, $3);
 
-  		if (obtTdS($1).t != T_RECORD){ yyerror("Identificador debe ser struct");}
-  		
-	   	if (obtTdS($3).t == T_ERROR && obtTdS($1).t == T_RECORD) {
-	   		yyerror("Campo no declarado");
-			$$.tipo = T_VACIO;
+			if (sim.t != T_RECORD) {
+				yyerror("El identificador debe ser struct");
 			}
-	   	}
+			if (camp2.t == T_ERROR) {
+				yyerror("Campo no declarado");
+				$$.tipo = T_VACIO;
+			}
+			$$.tipo = camp2.t;
+		}
 	   
 	| ID_ CORCHETEIZQ_ expresion CORCHETEDER_
 	{
