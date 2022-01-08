@@ -272,17 +272,18 @@ instruccionAsignacion
   	| ID_ PUNTO_ ID_ IGUAL_ expresion PUNTOCOMA_
 	  {
 		SIMB sim = obtTdS($1);
-		CAMP camp2 = obtTdR(sim.ref, $3);
+		CAMP camp = obtTdR(sim.ref, $3);
 
 		if (sim.t != T_RECORD) {yyerror("El identificador debe ser struct");}
-		if (camp2.t == T_ERROR) {yyerror("Campo no declarado");}
-		if($5.tipo != T_ERROR && camp2.t != T_ERROR){
+		if (camp.t == T_ERROR) {yyerror("Campo no declarado");}
+		if($5.tipo != T_ERROR && camp.t != T_ERROR){
 			if (sim.t == T_ERROR) {
 				yyerror("Objeto no declarado.");
-			}else if(camp2.t != $5.tipo){
+			}else if(camp.t != $5.tipo){
 				yyerror("Tipos incompatibles.");
 			}
 		}
+		emite(EASIG, crArgPos(niv, $5.desp), crArgNul(), crArgPos(niv, camp.d));
 	  }
 	;
 
@@ -479,10 +480,12 @@ expresionUnaria
 	;
 
 expresionSufija
-  	: constante	{
-		$$.tipo = $1.tipo;
-		$$.desp = creaVarTemp();
-  		emite(EASIG, crArgEnt($1.valor), crArgNul(), crArgPos(niv, $$.desp)); }
+  	: constante	
+		{
+			$$.tipo = $1.tipo;
+			$$.desp = creaVarTemp();
+			emite(EASIG, crArgEnt($1.valor), crArgNul(), crArgPos(niv, $$.desp)); 
+		}
 	| PARENTESISIZQ_ expresion PARENTESISDER_	{$$ = $2;}
 	| ID_
 	{
@@ -500,16 +503,18 @@ expresionSufija
   	| ID_ PUNTO_ ID_ 
 	  	{
 			SIMB sim = obtTdS($1);
-			CAMP camp2 = obtTdR(sim.ref, $3);
+			CAMP camp = obtTdR(sim.ref, $3);
 
 			if (sim.t != T_RECORD) {
 				yyerror("El identificador debe ser struct");
 			}
-			if (camp2.t == T_ERROR) {
+			if (camp.t == T_ERROR) {
 				yyerror("Campo no declarado");
 				$$.tipo = T_VACIO;
 			}
-			$$.tipo = camp2.t;
+			$$.tipo = camp.t;
+			$$.desp = creaVarTemp();
+			emite(EASIG, crArgPos(niv, camp.d), crArgNul(), crArgPos(niv, $$.desp));
 		}
 	   
 	| ID_ CORCHETEIZQ_ expresion CORCHETEDER_
@@ -531,6 +536,7 @@ expresionSufija
 	}
 	| ID_ PARENTESISIZQ_    
 		{  emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(TALLA_TIPO_SIMPLE)); } 
+		
     	parametrosActuales {SIMB sim = obtTdS($1); 
     		if (!cmpDom(sim.ref, $4.ref)){yyerror("Error en el dominio de los parámetros actuales");}} 
     		PARENTESISDER_ 

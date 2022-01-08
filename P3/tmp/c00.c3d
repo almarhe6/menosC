@@ -1,5 +1,5 @@
   0 INCTOP              ,            ,  i:   4    
-  1 GOTOS               ,            ,  e:   4    
+  1 GOTOS               ,            ,  e:   2    
   2 PUSHFP              ,            ,            
   3 FPTOP               ,            ,            
   4 INCTOP              ,            ,  i:  16    

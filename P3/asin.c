@@ -557,12 +557,12 @@ static const yytype_int16 yyrline[] =
        0,    45,    45,    45,    65,    66,    70,    71,    75,    83,
       98,   107,   108,   112,   117,   128,   135,   127,   153,   159,
      166,   175,   187,   186,   221,   222,   226,   227,   231,   232,
-     233,   234,   235,   239,   252,   272,   290,   298,   309,   317,
-     308,   330,   334,   329,   349,   350,   373,   374,   395,   396,
-     416,   417,   433,   434,   450,   451,   482,   486,   487,   500,
-     515,   533,   534,   532,   557,   558,   559,   563,   564,   568,
-     569,   573,   574,   578,   579,   583,   584,   585,   586,   590,
-     591,   595,   596,   600,   601,   602
+     233,   234,   235,   239,   252,   272,   291,   299,   310,   318,
+     309,   331,   335,   330,   350,   351,   374,   375,   396,   397,
+     417,   418,   434,   435,   451,   452,   483,   489,   490,   503,
+     520,   538,   540,   537,   563,   564,   565,   569,   570,   574,
+     575,   579,   580,   584,   585,   589,   590,   591,   592,   596,
+     597,   601,   602,   606,   607,   608
 };
 #endif
 
@@ -1742,23 +1742,24 @@ yyreduce:
 #line 273 "src/asin.y"
           {
 		SIMB sim = obtTdS((yyvsp[-5].ident));
-		CAMP camp2 = obtTdR(sim.ref, (yyvsp[-3].ident));
+		CAMP camp = obtTdR(sim.ref, (yyvsp[-3].ident));
 
 		if (sim.t != T_RECORD) {yyerror("El identificador debe ser struct");}
-		if (camp2.t == T_ERROR) {yyerror("Campo no declarado");}
-		if((yyvsp[-1].estructura).tipo != T_ERROR && camp2.t != T_ERROR){
+		if (camp.t == T_ERROR) {yyerror("Campo no declarado");}
+		if((yyvsp[-1].estructura).tipo != T_ERROR && camp.t != T_ERROR){
 			if (sim.t == T_ERROR) {
 				yyerror("Objeto no declarado.");
-			}else if(camp2.t != (yyvsp[-1].estructura).tipo){
+			}else if(camp.t != (yyvsp[-1].estructura).tipo){
 				yyerror("Tipos incompatibles.");
 			}
 		}
+		emite(EASIG, crArgPos(niv, (yyvsp[-1].estructura).desp), crArgNul(), crArgPos(niv, camp.d));
 	  }
-#line 1758 "asin.c"
+#line 1759 "asin.c"
     break;
 
   case 36:
-#line 291 "src/asin.y"
+#line 292 "src/asin.y"
         {
 		SIMB sim = obtTdS((yyvsp[-2].ident));
 		if (sim.t != T_ENTERO) {
@@ -1766,22 +1767,22 @@ yyreduce:
 		}
 		emite(EREAD, crArgNul(), crArgNul(),crArgPos(sim.n , sim.d));
 	}
-#line 1770 "asin.c"
+#line 1771 "asin.c"
     break;
 
   case 37:
-#line 299 "src/asin.y"
+#line 300 "src/asin.y"
         {
 		if ((yyvsp[-2].estructura).tipo != T_ERROR && (yyvsp[-2].estructura).tipo != T_ENTERO) {
 			yyerror("El argumento de la funcion print() debe ser de tipo entero.");
 		}
 		emite(EWRITE, crArgNul(), crArgNul(), crArgPos(niv, (yyvsp[-2].estructura).desp));  
 	}
-#line 1781 "asin.c"
+#line 1782 "asin.c"
     break;
 
   case 38:
-#line 309 "src/asin.y"
+#line 310 "src/asin.y"
                 {
 			if ((yyvsp[-1].estructura).tipo != T_ERROR){
 				if ((yyvsp[-1].estructura).tipo != T_LOGICO) yyerror("La expresion de evaluacion del \"if\" debe ser de tipo logico.");
@@ -1789,37 +1790,37 @@ yyreduce:
 			(yyval.cent) = creaLans(si);
 			emite(EIGUAL, crArgPos(niv, (yyvsp[-1].estructura).desp), crArgEnt(FALSE), crArgEtq((yyval.cent)));
 		}
-#line 1793 "asin.c"
+#line 1794 "asin.c"
     break;
 
   case 39:
-#line 317 "src/asin.y"
+#line 318 "src/asin.y"
                 {
 			(yyval.cent) = creaLans(si);
 			emite(GOTOS, crArgNul(), crArgNul(), crArgEtq((yyval.cent)));
 			completaLans((yyvsp[-1].cent), crArgEtq(si));
 		}
-#line 1803 "asin.c"
+#line 1804 "asin.c"
     break;
 
   case 40:
-#line 323 "src/asin.y"
+#line 324 "src/asin.y"
         {
 		completaLans((yyvsp[-2].cent), crArgEtq(si));
 	}
-#line 1811 "asin.c"
+#line 1812 "asin.c"
     break;
 
   case 41:
-#line 330 "src/asin.y"
+#line 331 "src/asin.y"
                 {
 			(yyval.cent) = si;
 		}
-#line 1819 "asin.c"
+#line 1820 "asin.c"
     break;
 
   case 42:
-#line 334 "src/asin.y"
+#line 335 "src/asin.y"
                 {
 			if ((yyvsp[-1].estructura).tipo != T_ERROR){ 
 				if ((yyvsp[-1].estructura).tipo != T_LOGICO) yyerror("La expresion de evaluacion del \"while\" debe ser logica");
@@ -1827,26 +1828,26 @@ yyreduce:
 			(yyval.cent) = creaLans(si);
         	emite(EIGUAL, crArgPos(niv, (yyvsp[-1].estructura).desp), crArgEnt(FALSE), crArgEtq((yyval.cent)));
 		}
-#line 1831 "asin.c"
+#line 1832 "asin.c"
     break;
 
   case 43:
-#line 342 "src/asin.y"
+#line 343 "src/asin.y"
                 {
 			emite(GOTOS, crArgNul(), crArgNul(), crArgEtq((yyvsp[-5].cent)));
         	completaLans((yyvsp[-1].cent), crArgEtq(si));
 		}
-#line 1840 "asin.c"
+#line 1841 "asin.c"
     break;
 
   case 44:
-#line 349 "src/asin.y"
+#line 350 "src/asin.y"
                                 { (yyval.estructura) = (yyvsp[0].estructura); }
-#line 1846 "asin.c"
+#line 1847 "asin.c"
     break;
 
   case 45:
-#line 351 "src/asin.y"
+#line 352 "src/asin.y"
         {
 		(yyval.estructura).tipo = T_ERROR;
 		if ((yyvsp[-2].estructura).tipo != T_ERROR || (yyvsp[0].estructura).tipo != T_ERROR) {
@@ -1866,17 +1867,17 @@ yyreduce:
             emite(EASIG, crArgEnt(1), crArgNul(), crArgPos(niv, (yyval.estructura).desp));
         }
 	}
-#line 1870 "asin.c"
+#line 1871 "asin.c"
     break;
 
   case 46:
-#line 373 "src/asin.y"
+#line 374 "src/asin.y"
                                 { (yyval.estructura) = (yyvsp[0].estructura); }
-#line 1876 "asin.c"
+#line 1877 "asin.c"
     break;
 
   case 47:
-#line 375 "src/asin.y"
+#line 376 "src/asin.y"
         {	
 		(yyval.estructura).tipo = T_ERROR;
 		
@@ -1894,17 +1895,17 @@ yyreduce:
 		emite((yyvsp[-1].cent), crArgPos(niv, (yyvsp[-2].estructura).desp), crArgPos(niv, (yyvsp[0].estructura).desp), crArgEtq(si + 2));
 		emite(EASIG, crArgEnt(0), crArgNul(), crArgPos(niv, (yyval.estructura).desp));
 	}
-#line 1898 "asin.c"
+#line 1899 "asin.c"
     break;
 
   case 48:
-#line 395 "src/asin.y"
+#line 396 "src/asin.y"
                            {(yyval.estructura) = (yyvsp[0].estructura);}
-#line 1904 "asin.c"
+#line 1905 "asin.c"
     break;
 
   case 49:
-#line 397 "src/asin.y"
+#line 398 "src/asin.y"
                 {
             		(yyval.estructura).tipo = T_ERROR;
 			if ((yyvsp[-2].estructura).tipo != T_ERROR && (yyvsp[0].estructura).tipo != T_ERROR){
@@ -1919,17 +1920,17 @@ yyreduce:
 			emite((yyvsp[-1].cent), crArgPos(niv, (yyvsp[-2].estructura).desp), crArgPos(niv, (yyvsp[0].estructura).desp), crArgEtq(si + 2));
 			emite(EASIG, crArgEnt(0), crArgNul(), crArgPos(niv, (yyval.estructura).desp));
 		}
-#line 1923 "asin.c"
+#line 1924 "asin.c"
     break;
 
   case 50:
-#line 416 "src/asin.y"
+#line 417 "src/asin.y"
                                   { (yyval.estructura) = (yyvsp[0].estructura); }
-#line 1929 "asin.c"
+#line 1930 "asin.c"
     break;
 
   case 51:
-#line 418 "src/asin.y"
+#line 419 "src/asin.y"
         {
         (yyval.estructura).tipo = T_ERROR;
 		if ((yyvsp[-2].estructura).tipo != T_ERROR && (yyvsp[0].estructura).tipo != T_ERROR) {
@@ -1942,17 +1943,17 @@ yyreduce:
 		(yyval.estructura).desp = creaVarTemp();
         	emite((yyvsp[-1].cent), crArgPos(niv, (yyvsp[-2].estructura).desp), crArgPos(niv, (yyvsp[0].estructura).desp), crArgPos(niv, (yyval.estructura).desp));
 	}
-#line 1946 "asin.c"
+#line 1947 "asin.c"
     break;
 
   case 52:
-#line 433 "src/asin.y"
+#line 434 "src/asin.y"
                           {(yyval.estructura) = (yyvsp[0].estructura);}
-#line 1952 "asin.c"
+#line 1953 "asin.c"
     break;
 
   case 53:
-#line 435 "src/asin.y"
+#line 436 "src/asin.y"
                 {
             (yyval.estructura).tipo = T_ERROR;
 			if ((yyvsp[-2].estructura).tipo != T_ERROR && (yyvsp[0].estructura).tipo != T_ERROR) {
@@ -1965,17 +1966,17 @@ yyreduce:
 			(yyval.estructura).desp = creaVarTemp();
         	emite((yyvsp[-1].cent), crArgPos(niv, (yyvsp[-2].estructura).desp), crArgPos(niv, (yyvsp[0].estructura).desp), crArgPos(niv, (yyval.estructura).desp));
 		}
-#line 1969 "asin.c"
+#line 1970 "asin.c"
     break;
 
   case 54:
-#line 450 "src/asin.y"
+#line 451 "src/asin.y"
                                 {(yyval.estructura) = (yyvsp[0].estructura);}
-#line 1975 "asin.c"
+#line 1976 "asin.c"
     break;
 
   case 55:
-#line 452 "src/asin.y"
+#line 453 "src/asin.y"
         {  
         (yyval.estructura).tipo = T_ERROR;
         if ((yyvsp[0].estructura).tipo != T_ERROR) {
@@ -2003,26 +2004,27 @@ yyreduce:
 			emite((yyvsp[-1].cent), crArgEnt(0), crArgPos(niv, (yyvsp[0].estructura).desp), crArgPos(niv, (yyval.estructura).desp));
 		}
     }
-#line 2007 "asin.c"
+#line 2008 "asin.c"
     break;
 
   case 56:
-#line 482 "src/asin.y"
-                        {
-		(yyval.estructura).tipo = (yyvsp[0].estructura).tipo;
-		(yyval.estructura).desp = creaVarTemp();
-  		emite(EASIG, crArgEnt((yyvsp[0].estructura).valor), crArgNul(), crArgPos(niv, (yyval.estructura).desp)); }
-#line 2016 "asin.c"
+#line 484 "src/asin.y"
+                {
+			(yyval.estructura).tipo = (yyvsp[0].estructura).tipo;
+			(yyval.estructura).desp = creaVarTemp();
+			emite(EASIG, crArgEnt((yyvsp[0].estructura).valor), crArgNul(), crArgPos(niv, (yyval.estructura).desp)); 
+		}
+#line 2018 "asin.c"
     break;
 
   case 57:
-#line 486 "src/asin.y"
+#line 489 "src/asin.y"
                                                         {(yyval.estructura) = (yyvsp[-1].estructura);}
-#line 2022 "asin.c"
+#line 2024 "asin.c"
     break;
 
   case 58:
-#line 488 "src/asin.y"
+#line 491 "src/asin.y"
         {
 		SIMB sim = obtTdS((yyvsp[0].ident));
 		(yyval.estructura).tipo = T_ERROR;
@@ -2035,29 +2037,31 @@ yyreduce:
 	    (yyval.estructura).desp = creaVarTemp();
 		emite(EASIG, crArgPos(niv, sim.d), crArgNul(), crArgPos(niv, (yyval.estructura).desp));   
 	}
-#line 2039 "asin.c"
+#line 2041 "asin.c"
     break;
 
   case 59:
-#line 501 "src/asin.y"
+#line 504 "src/asin.y"
                 {
 			SIMB sim = obtTdS((yyvsp[-2].ident));
-			CAMP camp2 = obtTdR(sim.ref, (yyvsp[0].ident));
+			CAMP camp = obtTdR(sim.ref, (yyvsp[0].ident));
 
 			if (sim.t != T_RECORD) {
 				yyerror("El identificador debe ser struct");
 			}
-			if (camp2.t == T_ERROR) {
+			if (camp.t == T_ERROR) {
 				yyerror("Campo no declarado");
 				(yyval.estructura).tipo = T_VACIO;
 			}
-			(yyval.estructura).tipo = camp2.t;
+			(yyval.estructura).tipo = camp.t;
+			(yyval.estructura).desp = creaVarTemp();
+			emite(EASIG, crArgPos(niv, camp.d), crArgNul(), crArgPos(niv, (yyval.estructura).desp));
 		}
-#line 2057 "asin.c"
+#line 2061 "asin.c"
     break;
 
   case 60:
-#line 516 "src/asin.y"
+#line 521 "src/asin.y"
         {
 		SIMB sim = obtTdS((yyvsp[-3].ident));
 		
@@ -2074,24 +2078,24 @@ yyreduce:
 		(yyval.estructura).desp = creaVarTemp();
         emite(EAV, crArgPos(sim.n, sim.d), crArgPos(niv, (yyvsp[-1].estructura).desp), crArgPos(niv, (yyval.estructura).desp)); 
 	}
-#line 2078 "asin.c"
+#line 2082 "asin.c"
     break;
 
   case 61:
-#line 533 "src/asin.y"
+#line 538 "src/asin.y"
                 {  emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(TALLA_TIPO_SIMPLE)); }
-#line 2084 "asin.c"
+#line 2088 "asin.c"
     break;
 
   case 62:
-#line 534 "src/asin.y"
+#line 540 "src/asin.y"
                            {SIMB sim = obtTdS((yyvsp[-3].ident)); 
     		if (!cmpDom(sim.ref, (yyvsp[0].referencia).ref)){yyerror("Error en el dominio de los parámetros actuales");}}
-#line 2091 "asin.c"
+#line 2095 "asin.c"
     break;
 
   case 63:
-#line 537 "src/asin.y"
+#line 543 "src/asin.y"
         {
 			(yyval.estructura).tipo = T_ERROR;
 			SIMB sim = obtTdS((yyvsp[-5].ident));
@@ -2109,143 +2113,143 @@ yyreduce:
 			(yyval.estructura).desp = creaVarTemp();
 			emite(EPOP, crArgNul(), crArgNul(), crArgPos(niv, (yyval.estructura).desp));
 	}
-#line 2113 "asin.c"
+#line 2117 "asin.c"
     break;
 
   case 64:
-#line 557 "src/asin.y"
+#line 563 "src/asin.y"
                  {(yyval.estructura).tipo = T_ENTERO; (yyval.estructura).valor = (yyvsp[0].cent);}
-#line 2119 "asin.c"
+#line 2123 "asin.c"
     break;
 
   case 65:
-#line 558 "src/asin.y"
+#line 564 "src/asin.y"
                  {(yyval.estructura).tipo = T_LOGICO; (yyval.estructura).valor = 1;}
-#line 2125 "asin.c"
+#line 2129 "asin.c"
     break;
 
   case 66:
-#line 559 "src/asin.y"
+#line 565 "src/asin.y"
                  {(yyval.estructura).tipo = T_LOGICO; (yyval.estructura).valor = 0;}
-#line 2131 "asin.c"
+#line 2135 "asin.c"
     break;
 
   case 67:
-#line 563 "src/asin.y"
+#line 569 "src/asin.y"
           {(yyval.referencia).ref = insTdD(-1, T_VACIO);}
-#line 2137 "asin.c"
+#line 2141 "asin.c"
     break;
 
   case 68:
-#line 564 "src/asin.y"
+#line 570 "src/asin.y"
                                  { (yyval.referencia).ref = (yyvsp[0].referencia).ref;}
-#line 2143 "asin.c"
+#line 2147 "asin.c"
     break;
 
   case 69:
-#line 568 "src/asin.y"
+#line 574 "src/asin.y"
                     {(yyval.referencia).ref = insTdD(-1, (yyvsp[0].estructura).tipo);}
-#line 2149 "asin.c"
+#line 2153 "asin.c"
     break;
 
   case 70:
-#line 569 "src/asin.y"
+#line 575 "src/asin.y"
                                                  { (yyval.referencia).ref = insTdD((yyvsp[0].referencia).ref, (yyvsp[-2].estructura).tipo);}
-#line 2155 "asin.c"
+#line 2159 "asin.c"
     break;
 
   case 71:
-#line 573 "src/asin.y"
+#line 579 "src/asin.y"
                         {(yyval.cent) = EMULT;}
-#line 2161 "asin.c"
+#line 2165 "asin.c"
     break;
 
   case 72:
-#line 574 "src/asin.y"
+#line 580 "src/asin.y"
                 {(yyval.cent) = ESUM;}
-#line 2167 "asin.c"
+#line 2171 "asin.c"
     break;
 
   case 73:
-#line 578 "src/asin.y"
+#line 584 "src/asin.y"
                         {(yyval.cent) = EIGUAL;}
-#line 2173 "asin.c"
+#line 2177 "asin.c"
     break;
 
   case 74:
-#line 579 "src/asin.y"
+#line 585 "src/asin.y"
                         {(yyval.cent) = EDIST;}
-#line 2179 "asin.c"
+#line 2183 "asin.c"
     break;
 
   case 75:
-#line 583 "src/asin.y"
+#line 589 "src/asin.y"
                         {(yyval.cent) = EMAY;}
-#line 2185 "asin.c"
+#line 2189 "asin.c"
     break;
 
   case 76:
-#line 584 "src/asin.y"
+#line 590 "src/asin.y"
                         {(yyval.cent) = EMEN;}
-#line 2191 "asin.c"
+#line 2195 "asin.c"
     break;
 
   case 77:
-#line 585 "src/asin.y"
+#line 591 "src/asin.y"
                         {(yyval.cent) = EMAYEQ;}
-#line 2197 "asin.c"
+#line 2201 "asin.c"
     break;
 
   case 78:
-#line 586 "src/asin.y"
+#line 592 "src/asin.y"
                         {(yyval.cent) = EMENEQ;}
-#line 2203 "asin.c"
+#line 2207 "asin.c"
     break;
 
   case 79:
-#line 590 "src/asin.y"
+#line 596 "src/asin.y"
                   {(yyval.cent) = ESUM;}
-#line 2209 "asin.c"
+#line 2213 "asin.c"
     break;
 
   case 80:
-#line 591 "src/asin.y"
+#line 597 "src/asin.y"
                    {(yyval.cent) = EDIF;}
-#line 2215 "asin.c"
+#line 2219 "asin.c"
     break;
 
   case 81:
-#line 595 "src/asin.y"
+#line 601 "src/asin.y"
                   {(yyval.cent) = EMULT;}
-#line 2221 "asin.c"
+#line 2225 "asin.c"
     break;
 
   case 82:
-#line 596 "src/asin.y"
+#line 602 "src/asin.y"
                   {(yyval.cent) = EDIVI;}
-#line 2227 "asin.c"
+#line 2231 "asin.c"
     break;
 
   case 83:
-#line 600 "src/asin.y"
+#line 606 "src/asin.y"
                   {(yyval.cent) = ESUM;}
-#line 2233 "asin.c"
+#line 2237 "asin.c"
     break;
 
   case 84:
-#line 601 "src/asin.y"
+#line 607 "src/asin.y"
                    {(yyval.cent) = EDIF;}
-#line 2239 "asin.c"
+#line 2243 "asin.c"
     break;
 
   case 85:
-#line 602 "src/asin.y"
+#line 608 "src/asin.y"
                  {(yyval.cent) = ESIG;}
-#line 2245 "asin.c"
+#line 2249 "asin.c"
     break;
 
 
-#line 2249 "asin.c"
+#line 2253 "asin.c"
 
       default: break;
     }
@@ -2477,6 +2481,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 604 "src/asin.y"
+#line 610 "src/asin.y"
 
 

@@ -1,18 +1,14 @@
-int main ()
-{ int x; int y; bool z;
+int b;
+int c;
 
-  z= true;
-  while (z) {
-    read(x); read(y);
-    if ((x != y) || false)          
-      if (!(x == 0) && true)                      
-        if ((y > 0) && (x >= 0))
-          if (y-x < 0) { print(x-y); z = false; }
-          else { print(y-x); z = false; }
-        else {}
-      else {}
-    else {}
-  }
+int main ()
+{ int a;
+int z;
+b = 7;
+
+  read(a);
+  a = (((((2 * a) - a) + a) / 2) * a);
+  print(a);
 
   return 0;
-} 
+}
