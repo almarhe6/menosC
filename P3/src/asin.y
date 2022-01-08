@@ -267,6 +267,7 @@ instruccionAsignacion
 				yyerror("Incompatibilidad de tipos, no son el mismo tipo o no son equivalentes."); 
 			}                      
 		}
+		emite(EVA, crArgPos(sim.n, sim.d) , crArgPos(niv, $3.desp), crArgPos(niv, $6.desp));
 	}
   	| ID_ PUNTO_ ID_ IGUAL_ expresion PUNTOCOMA_
 	  {
