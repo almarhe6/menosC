@@ -498,7 +498,7 @@ expresionSufija
 			 $$.tipo = sim.t;
 		 }
 	    $$.desp = creaVarTemp();
-		emite(EASIG, crArgPos(niv, sim.d), crArgNul(), crArgPos(niv, $$.desp));   
+		emite(EASIG, crArgPos(sim.n, sim.d), crArgNul(), crArgPos(niv, $$.desp));   
 	}
   	| ID_ PUNTO_ ID_ 
 	  	{

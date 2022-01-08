@@ -1,12 +1,19 @@
 int a[10];
 
 int main()
-{ int i;
-
-    a[0]=2;
-    print(a[0]);
-    i = 0;
-    while (i < 10) { a[i] = i;  i = i+1;}
+{ 
+    int x;int y;
+    bool ok;
+    ok = false;
+    while (! ok ) {
+        read(x); read(y);
+        if (((x>=0) && (x<10)) && ((y>=0) && (y<10))) {
+            ok = true;
+            print(x);
+            print(y);
+        }
+        else {}
+  }
 
     return 0;
 }

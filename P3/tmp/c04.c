@@ -14,7 +14,8 @@ bool inicializa (int x)
 
 int suma(int x, int y)
 { int a;
-  
+  print(x);
+  print(y);
   a = x+y;
   
   return a;
@@ -33,10 +34,11 @@ int main()
   ok = !inicializa(10);
   while (! ok ) {
     read(x); read(y);
-    if (((x>=0) && (x<10)) && ((y>=0) && (y<10))) ok = true;
+    if (((x>=0) && (x<10)) && ((y>=0) && (y<10))) {
+        ok = true;
+    }
     else {}
   }
-  
   print( division(suma(a[x], y), 2));
   
   return 0;

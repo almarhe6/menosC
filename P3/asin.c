@@ -2035,7 +2035,7 @@ yyreduce:
 			 (yyval.estructura).tipo = sim.t;
 		 }
 	    (yyval.estructura).desp = creaVarTemp();
-		emite(EASIG, crArgPos(niv, sim.d), crArgNul(), crArgPos(niv, (yyval.estructura).desp));   
+		emite(EASIG, crArgPos(sim.n, sim.d), crArgNul(), crArgPos(niv, (yyval.estructura).desp));   
 	}
 #line 2041 "asin.c"
     break;
