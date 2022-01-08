@@ -111,14 +111,13 @@ tipoSimple
 listaCampos
 	: tipoSimple ID_ PUNTOCOMA_ 
 		{
-			$$.ref = insTdR(-1, $2, $1, 0);
+			$$.ref = insTdR(-1, $2, $1, dvar);
 			dvar += TALLA_TIPO_SIMPLE; 
 		}
 	| listaCampos tipoSimple ID_ PUNTOCOMA_ {
 		if (insTdR($$.ref, $3, $2, dvar) == -1) yyerror("Campo de struct ya declarado");
 		else{
-		insTdR($$.ref,$3, $2, dvar);
-		dvar += TALLA_TIPO_SIMPLE;
+			dvar += TALLA_TIPO_SIMPLE;
 		}
 	}
 	;
@@ -283,7 +282,7 @@ instruccionAsignacion
 				yyerror("Tipos incompatibles.");
 			}
 		}
-		emite(EASIG, crArgPos(niv, $5.desp), crArgNul(), crArgPos(niv, camp.d));
+		emite(EASIG, crArgPos(niv, $5.desp), crArgNul(), crArgPos(sim.n, camp.d));
 	  }
 	;
 
@@ -514,7 +513,7 @@ expresionSufija
 			}
 			$$.tipo = camp.t;
 			$$.desp = creaVarTemp();
-			emite(EASIG, crArgPos(niv, camp.d), crArgNul(), crArgPos(niv, $$.desp));
+			emite(EASIG, crArgPos(sim.n, camp.d), crArgNul(), crArgPos(niv, $$.desp));
 		}
 	   
 	| ID_ CORCHETEIZQ_ expresion CORCHETEDER_
