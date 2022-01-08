@@ -45,9 +45,9 @@ programa:
 	{ 
 		si=0; dvar=0; niv = 0;  cargaContexto(niv); 
 		$<refaux>$.r1 = creaLans(si);
-		emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(-1)); //Variables globales
+		emite(INCTOP, crArgNul(), crArgNul(), crArgEnt($<refaux>$.r1)); //Variables globales
 		$<refaux>$.r2 = creaLans(si);
-        emite(GOTOS, crArgNul(), crArgNul(), crArgEtq(-1)); //Empieza
+        emite(GOTOS, crArgNul(), crArgNul(), crArgEtq($<refaux>$.r2)); //Empieza
 	}
 
     listaDeclaraciones 
@@ -56,9 +56,8 @@ programa:
 			if(verTdS) mostrarTdS();
 			if(obtTdS("main").t == T_ERROR) yyerror("El programa no tiene main"); 
 			SIMB sim = obtTdS("main");
-			$<refaux>$.r3 = sim.d;
 
-			completaLans($<refaux>1.r2, crArgEtq($<refaux>$.r3));
+			completaLans($<refaux>1.r2, crArgEtq(sim.d));
 		}
     ;
 
@@ -127,13 +126,14 @@ listaCampos
 declaracionFuncion
 	: tipoSimple ID_
 		{
-			niv = 1; cargaContexto(niv);
+			niv = 1;
+			cargaContexto(niv);
 		}
 	
 	PARENTESISIZQ_ parametrosFormales PARENTESISDER_ 
 
 		{
-			if(!insTdS($2,FUNCION,$1,niv-1,dvar,$5.ref)) yyerror("Ya hay una función con ese nombre");
+			if(!insTdS($2,FUNCION,$1,niv-1,si,$5.ref)) yyerror("Ya hay una función con ese nombre");
 			$<cent>$ = dvar;
 			dvaraux=dvar;
 			dvar = 0;
