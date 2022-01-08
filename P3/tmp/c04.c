@@ -5,7 +5,7 @@ int a[10];
 
 bool inicializa (int x)
 { int i;
-
+  print(x);
   i = 0;
   while (i < x) { a[i] = i; i = i+1; }
 
@@ -17,7 +17,7 @@ int suma(int x, int y)
   print(x);
   print(y);
   a = x+y;
-  
+
   return a;
 }
 
