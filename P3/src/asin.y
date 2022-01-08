@@ -464,15 +464,16 @@ expresionUnaria
 					$$.tipo = T_LOGICO;
 				}
             } else {
-			yyerror("Incompatibilidad de tipos");
+				yyerror("Incompatibilidad de tipos");
 			}                                                               
         } 
         //Similar a la forma vista en teoria de hacer NOT
-            if ($1 == ESIG) {
-                emite(EDIF, crArgEnt(1), crArgPos(niv, $2.desp), crArgPos(niv, $$.desp));    
-            } else {
-                emite($1, crArgEnt(0), crArgPos(niv, $2.desp), crArgPos(niv, $$.desp));
-            }
+		$$.desp = creaVarTemp();
+		if ($1 == ESIG) {
+			emite(EDIF, crArgEnt(1), crArgPos(niv, $2.desp), crArgPos(niv, $$.desp));    
+		} else {
+			emite($1, crArgEnt(0), crArgPos(niv, $2.desp), crArgPos(niv, $$.desp));
+		}
     }
 	;
 
