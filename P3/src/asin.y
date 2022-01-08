@@ -535,16 +535,22 @@ expresionSufija
         emite(EAV, crArgPos(sim.n, sim.d), crArgPos(niv, $3.desp), crArgPos(niv, $$.desp)); 
 	}
 	| ID_ PARENTESISIZQ_    
-		{  emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(TALLA_TIPO_SIMPLE)); } 
+		{  
+			emite(INCTOP, crArgNul(), crArgNul(), crArgEnt(TALLA_TIPO_SIMPLE)); 
+		} 
 		
-    	parametrosActuales {SIMB sim = obtTdS($1); 
-    		if (!cmpDom(sim.ref, $4.ref)){yyerror("Error en el dominio de los parámetros actuales");}} 
-    		PARENTESISDER_ 
-	{
+    	parametrosActuales 
+		{
+			SIMB sim = obtTdS($1); 
+    		if (!cmpDom(sim.ref, $4.ref)) yyerror("Error en el dominio de los parámetros actuales");
+			}
+
+    	PARENTESISDER_ 
+		{
 			$$.tipo = T_ERROR;
 			SIMB sim = obtTdS($1);
 			if (sim.t == T_ERROR) { 
-				yyerror("No existe ninguna variable con ese identificador."); 
+				yyerror("No existe funcion con ese identificador."); 
 			}
 			INF inf = obtTdD(sim.ref);
 			
@@ -566,13 +572,22 @@ constante
 	;
 
 parametrosActuales
-	: {$$.ref = insTdD(-1, T_VACIO);} 
-	| listaParametrosActuales{ $$.ref = $1.ref;} 
+	: 							{$$.ref = insTdD(-1, T_VACIO);} 
+	| listaParametrosActuales 	{ $$.ref = $1.ref;} 
 	;
 
 listaParametrosActuales
-	: expresion {$$.ref = insTdD(-1, $1.tipo);} 
-	| expresion COMA_ listaParametrosActuales{ $$.ref = insTdD($3.ref, $1.tipo);} 
+	: expresion 
+		{
+			$$.ref = insTdD(-1, $1.tipo);
+			emite(EPUSH, crArgNul(), crArgNul(), crArgPos(niv, $1.desp));
+		} 
+	| expresion COMA_ 
+		{
+			emite(EPUSH, crArgNul(), crArgNul(), crArgPos(niv, $1.desp));
+		}		
+	listaParametrosActuales
+		{ $$.ref = insTdD($4.ref, $1.tipo);} 
 	;
 
 operadorLogico

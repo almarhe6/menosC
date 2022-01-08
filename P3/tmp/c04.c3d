@@ -55,59 +55,64 @@
  54 INCTOP              ,            ,  i:  30    
  55 INCTOP              ,            ,  i:   1    
  56 EASIG     i:  10    ,            ,  p: (1,  2)
- 57 CALL                ,            ,  e:   2    
- 58 DECTOP              ,            ,  i:   1    
- 59 EPOP                ,            ,  p: (1,  3)
- 60 EDIF      i:   1    ,  p: (1,  3),  p: (1,  4)
- 61 EASIG     p: (1,  4),            ,  p: (1,  1)
- 62 EASIG     p: (1,  1),            ,  p: (1,  5)
- 63 EDIF      i:   1    ,  p: (1,  5),  p: (1,  6)
- 64 EIGUAL    p: (1,  6),  i:   0    ,  e:  95    
- 65 EREAD               ,            ,  p: (0, 10)
- 66 EREAD               ,            ,  p: (0, 11)
- 67 EASIG     p: (0, 10),            ,  p: (1,  7)
- 68 EASIG     i:   0    ,            ,  p: (1,  8)
- 69 EASIG     i:   1    ,            ,  p: (1,  9)
- 70 EMAYEQ    p: (1,  7),  p: (1,  8),  e:  72    
- 71 EASIG     i:   0    ,            ,  p: (1,  9)
- 72 EASIG     p: (0, 10),            ,  p: (1, 10)
- 73 EASIG     i:  10    ,            ,  p: (1, 11)
- 74 EASIG     i:   1    ,            ,  p: (1, 12)
- 75 EMEN      p: (1, 10),  p: (1, 11),  e:  77    
- 76 EASIG     i:   0    ,            ,  p: (1, 12)
- 77 EMULT     p: (1,  9),  p: (1, 12),  p: (1, 13)
- 78 EASIG     p: (0, 11),            ,  p: (1, 14)
- 79 EASIG     i:   0    ,            ,  p: (1, 15)
- 80 EASIG     i:   1    ,            ,  p: (1, 16)
- 81 EMAYEQ    p: (1, 14),  p: (1, 15),  e:  83    
- 82 EASIG     i:   0    ,            ,  p: (1, 16)
- 83 EASIG     p: (0, 11),            ,  p: (1, 17)
- 84 EASIG     i:  10    ,            ,  p: (1, 18)
- 85 EASIG     i:   1    ,            ,  p: (1, 19)
- 86 EMEN      p: (1, 17),  p: (1, 18),  e:  88    
- 87 EASIG     i:   0    ,            ,  p: (1, 19)
- 88 EMULT     p: (1, 16),  p: (1, 19),  p: (1, 20)
- 89 EMULT     p: (1, 13),  p: (1, 20),  p: (1, 21)
- 90 EIGUAL    p: (1, 21),  i:   0    ,  e:  94    
- 91 EASIG     i:   1    ,            ,  p: (1, 22)
- 92 EASIG     p: (1, 22),            ,  p: (1,  1)
- 93 GOTOS               ,            ,  e:  94    
- 94 GOTOS               ,            ,  e:  62    
- 95 INCTOP              ,            ,  i:   1    
+ 57 EPUSH               ,            ,  p: (1,  2)
+ 58 CALL                ,            ,  e:   2    
+ 59 DECTOP              ,            ,  i:   1    
+ 60 EPOP                ,            ,  p: (1,  3)
+ 61 EDIF      i:   1    ,  p: (1,  3),  p: (1,  4)
+ 62 EASIG     p: (1,  4),            ,  p: (1,  1)
+ 63 EASIG     p: (1,  1),            ,  p: (1,  5)
+ 64 EDIF      i:   1    ,  p: (1,  5),  p: (1,  6)
+ 65 EIGUAL    p: (1,  6),  i:   0    ,  e:  96    
+ 66 EREAD               ,            ,  p: (0, 10)
+ 67 EREAD               ,            ,  p: (0, 11)
+ 68 EASIG     p: (0, 10),            ,  p: (1,  7)
+ 69 EASIG     i:   0    ,            ,  p: (1,  8)
+ 70 EASIG     i:   1    ,            ,  p: (1,  9)
+ 71 EMAYEQ    p: (1,  7),  p: (1,  8),  e:  73    
+ 72 EASIG     i:   0    ,            ,  p: (1,  9)
+ 73 EASIG     p: (0, 10),            ,  p: (1, 10)
+ 74 EASIG     i:  10    ,            ,  p: (1, 11)
+ 75 EASIG     i:   1    ,            ,  p: (1, 12)
+ 76 EMEN      p: (1, 10),  p: (1, 11),  e:  78    
+ 77 EASIG     i:   0    ,            ,  p: (1, 12)
+ 78 EMULT     p: (1,  9),  p: (1, 12),  p: (1, 13)
+ 79 EASIG     p: (0, 11),            ,  p: (1, 14)
+ 80 EASIG     i:   0    ,            ,  p: (1, 15)
+ 81 EASIG     i:   1    ,            ,  p: (1, 16)
+ 82 EMAYEQ    p: (1, 14),  p: (1, 15),  e:  84    
+ 83 EASIG     i:   0    ,            ,  p: (1, 16)
+ 84 EASIG     p: (0, 11),            ,  p: (1, 17)
+ 85 EASIG     i:  10    ,            ,  p: (1, 18)
+ 86 EASIG     i:   1    ,            ,  p: (1, 19)
+ 87 EMEN      p: (1, 17),  p: (1, 18),  e:  89    
+ 88 EASIG     i:   0    ,            ,  p: (1, 19)
+ 89 EMULT     p: (1, 16),  p: (1, 19),  p: (1, 20)
+ 90 EMULT     p: (1, 13),  p: (1, 20),  p: (1, 21)
+ 91 EIGUAL    p: (1, 21),  i:   0    ,  e:  95    
+ 92 EASIG     i:   1    ,            ,  p: (1, 22)
+ 93 EASIG     p: (1, 22),            ,  p: (1,  1)
+ 94 GOTOS               ,            ,  e:  95    
+ 95 GOTOS               ,            ,  e:  63    
  96 INCTOP              ,            ,  i:   1    
- 97 EASIG     p: (0, 10),            ,  p: (1, 23)
- 98 EAV       p: (0,  0),  p: (1, 23),  p: (1, 24)
- 99 EASIG     p: (0, 11),            ,  p: (1, 25)
-100 CALL                ,            ,  e:  26    
-101 DECTOP              ,            ,  i:   2    
-102 EPOP                ,            ,  p: (1, 26)
-103 EASIG     i:   2    ,            ,  p: (1, 27)
-104 CALL                ,            ,  e:  42    
-105 DECTOP              ,            ,  i:   2    
-106 EPOP                ,            ,  p: (1, 28)
-107 EWRITE              ,            ,  p: (1, 28)
-108 EASIG     i:   0    ,            ,  p: (1, 29)
-109 EASIG     p: (1, 29),            ,  p: (1, -3)
-110 TOPFP               ,            ,            
-111 FPPOP               ,            ,            
-112 FIN                 ,            ,            
+ 97 INCTOP              ,            ,  i:   1    
+ 98 EASIG     p: (0, 10),            ,  p: (1, 23)
+ 99 EAV       p: (0,  0),  p: (1, 23),  p: (1, 24)
+100 EPUSH               ,            ,  p: (1, 24)
+101 EASIG     p: (0, 11),            ,  p: (1, 25)
+102 EPUSH               ,            ,  p: (1, 25)
+103 CALL                ,            ,  e:  26    
+104 DECTOP              ,            ,  i:   2    
+105 EPOP                ,            ,  p: (1, 26)
+106 EPUSH               ,            ,  p: (1, 26)
+107 EASIG     i:   2    ,            ,  p: (1, 27)
+108 EPUSH               ,            ,  p: (1, 27)
+109 CALL                ,            ,  e:  42    
+110 DECTOP              ,            ,  i:   2    
+111 EPOP                ,            ,  p: (1, 28)
+112 EWRITE              ,            ,  p: (1, 28)
+113 EASIG     i:   0    ,            ,  p: (1, 29)
+114 EASIG     p: (1, 29),            ,  p: (1, -3)
+115 TOPFP               ,            ,            
+116 FPPOP               ,            ,            
+117 FIN                 ,            ,            
