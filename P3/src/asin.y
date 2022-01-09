@@ -165,18 +165,15 @@ listaParametrosFormales
 	: tipoSimple ID_
 		{
 			$$.ref = insTdD(-1,$1);
-			
-			if (!insTdS($2, PARAMETRO, $1, niv, -$$.talla, -1))
-				yyerror("Identificador de parametro repetido");
-			$$.talla += TALLA_SEGENLACES + TALLA_TIPO_SIMPLE;
+			$$.talla = TALLA_SEGENLACES + TALLA_TIPO_SIMPLE;
+			if (!insTdS($2, PARAMETRO, $1, niv, -$$.talla, -1)) yyerror("Identificador de parametro repetido");
 			if(verTdS) mostrarTdS();
 		}
 	| tipoSimple ID_ COMA_ listaParametrosFormales 
 	{
 		$$.ref = insTdD($4.ref,$1);
-		if (!insTdS($2, PARAMETRO, $1, niv, -$$.talla, -1))
-			yyerror("Identificador de parametro repetido");
-		$$.talla += $4.talla + TALLA_TIPO_SIMPLE;
+		$$.talla = $4.talla + TALLA_TIPO_SIMPLE;
+		if (!insTdS($2, PARAMETRO, $1, niv, -$$.talla, -1)) yyerror("Identificador de parametro repetido");
 		if(verTdS) mostrarTdS();
 	}
 	;
