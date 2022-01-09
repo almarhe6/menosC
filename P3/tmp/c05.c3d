@@ -3,7 +3,7 @@
   2 PUSHFP              ,            ,            
   3 FPTOP               ,            ,            
   4 INCTOP              ,            ,  i:  12    
-  5 EASIG     p: (1, -1),            ,  p: (1,  1)
+  5 EASIG     p: (1, -3),            ,  p: (1,  1)
   6 EASIG     i:   1    ,            ,  p: (1,  2)
   7 EASIG     i:   1    ,            ,  p: (1,  3)
   8 EMENEQ    p: (1,  1),  p: (1,  2),  e:  10    
@@ -12,9 +12,9 @@
  11 EASIG     i:   1    ,            ,  p: (1,  4)
  12 EASIG     p: (1,  4),            ,  p: (1,  0)
  13 GOTOS               ,            ,  e:  25    
- 14 EASIG     p: (1, -1),            ,  p: (1,  5)
+ 14 EASIG     p: (1, -3),            ,  p: (1,  5)
  15 INCTOP              ,            ,  i:   1    
- 16 EASIG     p: (1, -1),            ,  p: (1,  6)
+ 16 EASIG     p: (1, -3),            ,  p: (1,  6)
  17 EASIG     i:   1    ,            ,  p: (1,  7)
  18 EDIF      p: (1,  6),  p: (1,  7),  p: (1,  8)
  19 EPUSH               ,            ,  p: (1,  8)
